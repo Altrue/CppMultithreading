@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Libraries">
+      <UniqueIdentifier>{a575005b-6e9a-4b59-bcdb-95e3af491748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\core">
+      <UniqueIdentifier>{643751cd-b046-451b-a6ef-4abc34e5df53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\files">
+      <UniqueIdentifier>{702a7207-adfe-4182-b921-28eede8ce652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\pthreads">
+      <UniqueIdentifier>{fcfed855-0d1b-4f17-9108-d2b456d79a0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\socket">
+      <UniqueIdentifier>{86c5d6ca-3b7d-4702-9c43-9aeb32ac6f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\files\exceptions">
+      <UniqueIdentifier>{ba634a82-a785-4573-9ee8-7416de71d3ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\socket\exceptions">
+      <UniqueIdentifier>{a16ce07b-57b1-46cb-8e97-e742a56f0151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\hash">
+      <UniqueIdentifier>{46822c95-c180-41b3-b5c8-073049cc6a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries\util">
+      <UniqueIdentifier>{ceea1689-abd9-4bf0-b55c-4aa8cf7bdc6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Demos">
+      <UniqueIdentifier>{67ade825-2cc6-4523-bb68-29fc3dc606d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Demos">
+      <UniqueIdentifier>{da1b1422-075b-42f0-bb3e-a36ef9af0725}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\core\include\CDateTime.h">
+      <Filter>Header Files\Libraries\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\core\include\CException.h">
+      <Filter>Header Files\Libraries\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\CFile.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\CFileBinary.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\CFileText.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\CFSObject.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\EFileEOL.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\EFileOpenMode.h">
+      <Filter>Header Files\Libraries\files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\pthreads\include\need_errno.h">
+      <Filter>Header Files\Libraries\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\pthreads\include\pthread.h">
+      <Filter>Header Files\Libraries\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\pthreads\include\sched.h">
+      <Filter>Header Files\Libraries\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\pthreads\include\semaphore.h">
+      <Filter>Header Files\Libraries\pthreads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CSocket.h">
+      <Filter>Header Files\Libraries\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CSocketIp4.h">
+      <Filter>Header Files\Libraries\socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\COpenFileException.h">
+      <Filter>Header Files\Libraries\files\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\files\include\CFileIOException.h">
+      <Filter>Header Files\Libraries\files\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CBrokenSocketException.h">
+      <Filter>Header Files\Libraries\socket\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CConnectionException.h">
+      <Filter>Header Files\Libraries\socket\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CDnsResolutionException.h">
+      <Filter>Header Files\Libraries\socket\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CServerSocketException.h">
+      <Filter>Header Files\Libraries\socket\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\socket\include\CSocketIOException.h">
+      <Filter>Header Files\Libraries\socket\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashCrc32.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashMd5.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashNone.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashSha1.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashSha224.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\CHashSha256.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\util\include\CUtil.h">
+      <Filter>Header Files\Libraries\util</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoDateTime.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoException.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoFiles.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoHash.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoSocket.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoThreads.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoUtil.h">
+      <Filter>Header Files\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\hash\include\IHash.h">
+      <Filter>Header Files\Libraries\hash</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoDateTime.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoException.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoFiles.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoHash.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoSocket.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoThreads.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoUtil.cpp">
+      <Filter>Source Files\Demos</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
