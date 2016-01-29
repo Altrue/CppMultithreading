@@ -143,6 +143,12 @@
     <ClInclude Include="AgentThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fifo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdMtx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -158,6 +164,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AgentThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fifo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdMtx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
