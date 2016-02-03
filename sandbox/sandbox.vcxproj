@@ -222,10 +222,14 @@
     <ClInclude Include="..\libs\socket\include\CSocketIOException.h" />
     <ClInclude Include="..\libs\socket\include\CSocketIp4.h" />
     <ClInclude Include="..\libs\util\include\CUtil.h" />
+    <ClInclude Include="DemoHash.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\project\utils.cpp" />
+    <ClCompile Include="DemoHash.cpp" />
     <ClCompile Include="sandbox.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
