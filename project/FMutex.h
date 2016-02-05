@@ -2,13 +2,13 @@
 
 #include <mutex>
 
-class StdMtx
+class FMutex
 {
 private:
 	std::mutex mtx;
 public:
-	StdMtx();
-	~StdMtx();
+	FMutex();
+	~FMutex();
 	void lock();
 	void unlock();
 };
