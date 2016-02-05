@@ -17,10 +17,13 @@
 
 class Hasher
 {
+private:
+	static Hasher &instance;
+	IHash *hasher;
+	Hasher(std::string hashName);
 public:
-	Hasher();
+	static Hasher Hasher::getInstance(std::string hashName);
+	std::string calculateHash(const std::string p_text);
 	~Hasher();
 };
-
-std::string calculateHash(IHash *p_hasher, const std::string p_text);
 

@@ -103,29 +103,8 @@ void EnqueueDequeue() {
 void crackpw(std::string p_hash, std::string target_hash) {
 	char password[64] = "";
 	std::string testAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-	IHash *hasher = nullptr;
 	std::string currentHash = "";
-
-	if (p_hash == "crc32") {
-		hasher = new CHashCrc32();
-		std::cout << "Hash en CRC32" << std::endl;
-	}
-	else if (p_hash == "md5") {
-		hasher = new CHashMd5();
-		std::cout << "Hash en Md5" << std::endl;
-	}
-	else if (p_hash == "sha1") {
-		hasher = new CHashSha1();
-		std::cout << "Hash en Sha1" << std::endl;
-	}
-	else if (p_hash == "sha224") {
-		hasher = new CHashSha224();
-		std::cout << "Hash en Sha224" << std::endl;
-	}
-	else if (p_hash == "sha256") {
-		hasher = new CHashSha256();
-		std::cout << "Hash en Sha256" << std::endl;
-	}
+	Hasher hasher = Hasher::getInstance(p_hash);
 
 	strcpy_s(password, sizeof(password), "");
 	bool isRunning = true;
@@ -134,7 +113,7 @@ void crackpw(std::string p_hash, std::string target_hash) {
 	std::cout << "" << std::endl;
 	do {
 		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
-		currentHash = calculateHash(hasher, password);
+		currentHash = hasher.calculateHash(password);
 		//std::cout << password << " -> " << currentHash << "" << std::endl;
 
 		if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
@@ -149,8 +128,6 @@ void crackpw(std::string p_hash, std::string target_hash) {
 
 	} while (isRunning);
 	return;
-
-	delete hasher;
 }
 
 
