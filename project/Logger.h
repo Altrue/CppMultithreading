@@ -1,21 +1,38 @@
 #pragma once
 
+#include <fstream>
+#include <stdarg.h>
 #include <iostream>
+#include <pthread.h>
+#include <vector>
+#include <string>
+
+#define INFO  " Info : "
+#define WARN  " Warn : "
+#define ERROR " Error: "
+#define ALERT " Alert : "
+
+using namespace std;
 
 class Logger
 {
-private:
-	void insertLog(std::string pContent, int pLevel);
-	int _logLevel;
+	private:
+		//Mutex mLock;
+		ofstream mStream;
+		void insertLog(char* pContent, int pLevel);
+		int _logLevel;
+		char* _fileName;
+		char* getTimeStamp();
+		std::vector<std::string> _aMessages;
 
-public:
-	Logger();
-	~Logger();
+	public:
+		Logger();
+		~Logger();
 
-	void logInfo(std::string pContent);
-	void logWarn(std::string pContent);
-	void logAlert(std::string pContent);
-	void logError(std::string pContent);
-	void setLogLevel(int pLevel);
+		void logInfo(char* pContent);
+		void logWarn(char* pContent);
+		void logAlert(char* pContent);
+		void logError(char* pContent);
+		void setLogLevel(int pLevel);
 };
 
