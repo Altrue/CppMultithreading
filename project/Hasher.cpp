@@ -41,7 +41,6 @@ Hasher::Hasher(std::string hashName)
 // Public
 Hasher::~Hasher()
 {
-
 }
 
 Hasher Hasher::getInstance(std::string hashName)
