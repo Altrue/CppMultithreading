@@ -224,8 +224,9 @@
     <ClInclude Include="..\libs\util\include\CUtil.h" />
     <ClInclude Include="AgentThread.h" />
     <ClInclude Include="Fifo.h" />
+    <ClInclude Include="Hasher.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="StdMtx.h" />
+    <ClInclude Include="FMutex.h" />
     <ClInclude Include="PasswordChunk.h" />
     <ClInclude Include="singleton.h" />
     <ClInclude Include="stdafx.h" />
@@ -235,8 +236,9 @@
   <ItemGroup>
     <ClCompile Include="AgentThread.cpp" />
     <ClCompile Include="Fifo.cpp" />
+    <ClCompile Include="Hasher.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="StdMtx.cpp" />
+    <ClCompile Include="FMutex.cpp" />
     <ClCompile Include="PasswordChunk.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="stdafx.cpp" />

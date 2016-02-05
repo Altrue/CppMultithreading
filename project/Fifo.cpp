@@ -4,6 +4,11 @@ Fifo::Fifo()
 {
 }
 
+
 Fifo::~Fifo()
 {
+}
+
+CPasswordChunk Fifo::getChunck() {
+
 }
