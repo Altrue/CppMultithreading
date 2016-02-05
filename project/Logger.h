@@ -5,17 +5,17 @@
 class Logger
 {
 private:
-	void insert_log(std::string p_content, int p_level);
-	int log_level;
+	void insertLog(std::string pContent, int pLevel);
+	int _logLevel;
 
 public:
 	Logger();
 	~Logger();
 
-	void log_info(std::string p_content);
-	void log_warn(std::string p_content);
-	void log_alert(std::string p_content);
-	void log_error(std::string p_content);
-	void set_log_level(int p_level);
+	void logInfo(std::string pContent);
+	void logWarn(std::string pContent);
+	void logAlert(std::string pContent);
+	void logError(std::string pContent);
+	void setLogLevel(int pLevel);
 };
 
