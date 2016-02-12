@@ -5,7 +5,7 @@
 class FMutex
 {
 private:
-	std::mutex mtx;
+	std::mutex _mtx;
 public:
 	FMutex();
 	~FMutex();

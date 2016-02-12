@@ -12,9 +12,9 @@ FMutex::~FMutex()
 }
 
 void FMutex::lock() {
-	mtx.lock();
+	this->_mtx.lock();
 }
 
 void FMutex::unlock() {
-	mtx.unlock();
+	this->_mtx.unlock();
 }
