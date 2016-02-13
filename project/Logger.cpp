@@ -1,71 +1,55 @@
 #include "Logger.h"
-#include <stdarg.h>
 
 Logger::Logger()
 {
-	//mutexInit(&mLock, NULL);
-	mStream.open(_fileName, fstream::app);
-	_aMessages.push_back("");
-	_aMessages.push_back(ERROR);
-	_aMessages.push_back(ALERT);
-	_aMessages.push_back(WARN);
-	_aMessages.push_back(INFO);
 }
 
 Logger::~Logger()
 {
-	mStream.close();
-	//mutexDestroy(&mLock);
 }
 
-void Logger::insertLog(char* pContent, int pLevel)
+void Logger::insertLog(string pContent)
 {
-	//mutexLock(&mLock);
-	va_list argList;
-	char buffer[1024];
-
-	va_start(argList, pContent);
-	vsnprintf(buffer, 1024, pContent, argList);
-	va_end(argList);
-
-	mStream << getTimeStamp() << _aMessages[pLevel] << buffer << endl;
-	//mutexUnlock(&mLock);
-}
-
-char * Logger::getTimeStamp()
-{
-	char*      tString = new char[80];
-	time_t     t       = time(0);
-	struct tm* today   = localtime(&t);
-
-	strftime(tString, 80, "%d/%m/%Y %H:%M:%S", today);
-
-	return tString;
-}
-
-void Logger::logInfo(char* pContent)
-{
-	insertLog(pContent, 4);
-}
-
-void Logger::logWarn(char* pContent)
-{
-	insertLog(pContent, 3);
-}
-
-void Logger::logAlert(char* pContent)
-{
-	insertLog(pContent, 2);
-}
-
-void Logger::logError(char* pContent)
-{
-	insertLog(pContent, 1);
-}
-
-void Logger::setLogLevel(int pLevel)
-{
-	if (pLevel > 0) {
-		_logLevel = pLevel;
+	ofstream fichier(this->_fileName, ios::out | ios::app);  // ouverture en écriture avec effacement du fichier ouvert
+	if (fichier){
+		fichier << pContent << endl;
+		fichier.close();
 	}
+}
+
+string Logger::getTimeStamp()
+{
+	CDateTime date;
+	std::stringstream out;
+	date.Now();
+	out << date.m_wYear << "/" << date.m_wMonth << "/" << date.m_wDay << " " << date.m_wHour << ":" << date.m_wMinute << ":" << date.m_wSecond;
+	return out.str();
+}
+
+void Logger::newMessage(int pLevel, string message)
+{
+	this->_mtx.lock();
+
+	string messageLog;
+
+	messageLog = messageLog + this->getTimeStamp();
+
+	if (pLevel == this->LEVEL_ALERT) {
+		messageLog = messageLog + " ALERT : ";
+	}
+	else if (pLevel == this->LEVEL_ERROR) {
+		messageLog = messageLog + " ERROR : ";
+	}
+	else if (pLevel == this->LEVEL_INFO) {
+		messageLog = messageLog + " INFO : ";
+	}
+	else if (pLevel == this->LEVEL_WARN) {
+		messageLog = messageLog + " WARNING : ";
+	}
+
+	messageLog = messageLog + message;
+
+	this->insertLog(messageLog);
+
+	this->_mtx.unlock();
 }

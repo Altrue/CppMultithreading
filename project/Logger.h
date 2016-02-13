@@ -13,26 +13,26 @@
 #define ALERT " Alert : "
 
 using namespace std;
+#include "FMutex.h"
+#include "CDateTime.h"
+#include <sstream>
+#include <string>
 
 class Logger
 {
 	private:
-		//Mutex mLock;
-		ofstream mStream;
-		void insertLog(char* pContent, int pLevel);
-		int _logLevel;
-		char* _fileName;
-		char* getTimeStamp();
-		std::vector<std::string> _aMessages;
+		string _fileName = "dhc.log";
+		FMutex _mtx;
+		string getTimeStamp();
+		void insertLog(string pContent);
 
 	public:
+		const int LEVEL_INFO = 0;
+		const int LEVEL_ERROR = 3;
+		const int LEVEL_ALERT = 2;
+		const int LEVEL_WARN = 1;
 		Logger();
 		~Logger();
-
-		void logInfo(char* pContent);
-		void logWarn(char* pContent);
-		void logAlert(char* pContent);
-		void logError(char* pContent);
-		void setLogLevel(int pLevel);
+		void newMessage(int pLevel, string message);
 };
 
