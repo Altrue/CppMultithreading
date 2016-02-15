@@ -9,7 +9,9 @@ private:
 public:
 	FMutex();
 	~FMutex();
+	//pose un vérou
 	void lock();
+	//enlève le vérou
 	void unlock();
 };
 

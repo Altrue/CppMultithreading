@@ -23,16 +23,20 @@ class Logger
 	private:
 		string _fileName = "dhc.log";
 		FMutex _mtx;
+		//récupération de la date à partir de la class du prof
 		string getTimeStamp();
+		//insertion dans le fichier
 		void insertLog(string pContent);
 
 	public:
+		//les niveau de log
 		const int LEVEL_INFO = 0;
 		const int LEVEL_ERROR = 3;
 		const int LEVEL_ALERT = 2;
 		const int LEVEL_WARN = 1;
 		Logger();
 		~Logger();
+		//fonction utilisée pour créer les logs (thread-safe)
 		void newMessage(int pLevel, string message);
 };
 
