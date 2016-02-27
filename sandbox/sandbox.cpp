@@ -13,7 +13,7 @@
 #include "CHashSha224.h"
 #include "CHashSha256.h"
 #include "CException.h"
-
+//
 // Argument 1
 //	CRC32
 //	MD5
