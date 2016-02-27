@@ -1,21 +1,42 @@
 #pragma once
 
+#include <fstream>
+#include <stdarg.h>
 #include <iostream>
+#include <pthread.h>
+#include <vector>
+#include <string>
+
+#define INFO  " Info : "
+#define WARN  " Warn : "
+#define ERROR " Error: "
+#define ALERT " Alert : "
+
+using namespace std;
+#include "FMutex.h"
+#include "CDateTime.h"
+#include <sstream>
+#include <string>
 
 class Logger
 {
-private:
-	void insert_log(std::string p_content, int p_level);
-	int log_level;
+	private:
+		string _fileName = "dhc.log";
+		FMutex _mtx;
+		//récupération de la date à partir de la class du prof
+		string getTimeStamp();
+		//insertion dans le fichier
+		void insertLog(string pContent);
 
-public:
-	Logger();
-	~Logger();
-
-	void log_info(std::string p_content);
-	void log_warn(std::string p_content);
-	void log_alert(std::string p_content);
-	void log_error(std::string p_content);
-	void set_log_level(int p_level);
+	public:
+		//les niveau de log
+		const int LEVEL_INFO = 0;
+		const int LEVEL_ERROR = 3;
+		const int LEVEL_ALERT = 2;
+		const int LEVEL_WARN = 1;
+		Logger();
+		~Logger();
+		//fonction utilisée pour créer les logs (thread-safe)
+		void newMessage(int pLevel, string message);
 };
 

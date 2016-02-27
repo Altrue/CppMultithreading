@@ -1,10 +1,22 @@
 #include "stdafx.h"
 #include <iostream>
 #include <deque>
+#include <windows.h>
 
 #include "utils.h"
 #include "CException.h"
 #include "PasswordChunk.h"
+#include "Hasher.h"
+
+#include "IHash.h"
+#include "CHashNone.h"
+#include "CHashCrc32.h"
+#include "CHashMd5.h"
+#include "CHashSha1.h"
+#include "CHashSha224.h"
+#include "CHashSha256.h"
+#include "CException.h"
+
 
 
 void ExtractCommandLine( int argc, const char *argv[] )	{
@@ -76,6 +88,47 @@ void EnqueueDequeue() {
 	}
 	std::cout << "Element count in FIFO: " << fifo.size() << std::endl;
 }
+// Au dessus : Code par défaut du prof
+
+// En dessous : Ajout Aloïs work in progress
+// Argument 1
+//	CRC32
+//	MD5
+//	SHA1
+//	SHA224
+//	SHA256
+//
+// Argument 2
+//	Hash à décoder
+void crackpw(std::string p_hash, std::string target_hash) {
+	char password[64] = "";
+	std::string testAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+	std::string currentHash = "";
+	Hasher hasher = Hasher::getInstance(p_hash);
+
+	strcpy_s(password, sizeof(password), "");
+	bool isRunning = true;
+	std::cout << "" << std::endl;
+	std::cout << "Recherche en cours..." << std::endl;
+	std::cout << "" << std::endl;
+	do {
+		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
+		currentHash = hasher.calculateHash(password);
+		//std::cout << password << " -> " << currentHash << "" << std::endl;
+
+		if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
+			std::cout << "Trouve ! Le mot de passe est : " << password << std::endl;
+			isRunning = false;
+		}
+
+		if (GetAsyncKeyState(VK_ESCAPE) != 0) {
+			isRunning = false;
+			std::cout << "Arret demande par l'utilisateur" << std::endl;
+		}
+
+	} while (isRunning);
+	return;
+}
 
 
 int main( int argc, const char *argv[] ) {
@@ -84,8 +137,10 @@ int main( int argc, const char *argv[] ) {
 	std::cout << std::endl;
 
 	//ExtractCommandLine( argc, argv );
-	GeneratePasswords();
+	//GeneratePasswords();
 	//EnqueueDequeue();
+
+	crackpw(argv[1], argv[2]);
 
 	std::cout << std::endl;
 	std::cout << "** Goodbye" << std::endl;

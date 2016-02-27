@@ -146,10 +146,13 @@
     <ClInclude Include="Fifo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StdMtx.h">
+    <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
+    <ClInclude Include="FMutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hasher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -172,10 +175,13 @@
     <ClCompile Include="Fifo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StdMtx.cpp">
+    <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
+    <ClCompile Include="FMutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hasher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

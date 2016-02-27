@@ -22,7 +22,6 @@
 //	SHA256
 void sandbox(std::string p_hash, std::string target_hash) {
 	char password[64] = "";
-	double count = 0;
 	std::string testAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 	IHash *hasher = nullptr;
 	const std::string p_fileName = "";
@@ -58,16 +57,11 @@ void sandbox(std::string p_hash, std::string target_hash) {
 		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
 		currentHash = test_hash(hasher, p_fileName, password);
 		//std::cout << password << " -> " << currentHash << "" << std::endl;
-		count++;
 
 		if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
 			std::cout << "Trouve ! Le mot de passe est : " << password << std::endl;
 			isRunning = false;
 		}
-
-		/*if (count > 100000) {
-			isRunning = false;
-		}*/
 
 		if (GetAsyncKeyState(VK_ESCAPE) != 0) {
 			isRunning = false;
