@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Fifo.h"
 
 template<typename T>
@@ -29,5 +31,8 @@ T Fifo<T>::pull() {
 
 template<typename T>
 int Fifo<T>::getSize() {
-	return this->_que.size
+	this->_mtx.lock();
+	int i = this->_que.size();
+	this->_mtx.unlock();
+	return i;
 }

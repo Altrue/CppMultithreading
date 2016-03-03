@@ -116,6 +116,7 @@
       </IgnoreSpecificDefaultLibraries>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)libs\pthreads\lib;$(SolutionDir)libs\util\lib;$(SolutionDir)libs\hash\lib;$(SolutionDir)libs\socket\lib;$(SolutionDir)libs\files\lib;$(SolutionDir)libs\core\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

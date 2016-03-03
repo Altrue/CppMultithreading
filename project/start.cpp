@@ -8,6 +8,8 @@
 #include "PasswordChunk.h"
 #include "Hasher.h"
 #include "Logger.h"
+#include "Fifo.cpp"
+#include "PasswordChunk.h"
 
 #include "IHash.h"
 #include "CHashNone.h"
@@ -108,10 +110,21 @@ void crackpw(std::string p_hash, std::string target_hash) {
 	std::string currentHash = "";
 	Logger *logger;
 	Hasher *hasher;
+	Fifo<CPasswordChunk> *pwdFifo = new Fifo<CPasswordChunk>();
 
 	hasher = Hasher::getInstance();
 	hasher->initialize(p_hash);
 	logger = Logger::getInstance();
+
+	CPasswordChunk chunktest;
+	chunktest.Reset();
+	chunktest.SetPasswordRange("00000aa", "00000**");
+
+	// On teste que la FIFO marche bien.
+	logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
+	pwdFifo->push(chunktest);
+	logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
+	// Fin test fifo (à retirer plus tard)
 
 	strcpy_s(password, sizeof(password), "");
 	bool isRunning = true;

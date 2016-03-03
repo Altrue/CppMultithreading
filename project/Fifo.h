@@ -8,7 +8,8 @@ class Fifo
 {
 private:
 	FMutex _mtx;
-	std::deque<T> _que;
+	std::deque<T> _que;                                                                                 
+
 public:
 	Fifo();
 	~Fifo();
