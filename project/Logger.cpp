@@ -20,7 +20,22 @@ std::string Logger::getTimeStamp()
 	CDateTime date;
 	std::stringstream out;
 	date.Now();
-	out << date.m_wYear << "/" << date.m_wMonth << "/" << date.m_wDay << " " << date.m_wHour << ":" << date.m_wMinute << ":" << date.m_wSecond;
+	
+	std::string nbMois = std::to_string(date.m_wMonth);
+	std::string nbJours = std::to_string(date.m_wDay);
+	std::string nbHeures = std::to_string(date.m_wHour);
+	std::string nbMinutes = std::to_string(date.m_wMinute);
+	std::string nbSecondes = std::to_string(date.m_wSecond);
+	// Super joli le décalage d'un caractère à chaque fois
+
+	// Normalisation de la date (exemple 3 -> 03)
+	if (nbMois.length() < 2) { nbMois = "0" + nbMois; }
+	if (nbJours.length() < 2) { nbJours = "0" + nbJours; }
+	if (nbHeures.length() < 2) { nbHeures = "0" + nbHeures; }
+	if (nbMinutes.length() < 2) { nbMinutes = "0" + nbMinutes; }
+	if (nbSecondes.length() < 2) { nbSecondes = "0" + nbSecondes; }
+
+	out << date.m_wYear << "/" << nbMois << "/" << nbJours << " " << nbHeures << ":" << nbMinutes << ":" << nbSecondes;
 	return out.str();
 }
 
@@ -46,7 +61,7 @@ void Logger::newMessage(int pLevel, std::string message)
 	}
 
 	messageLog = messageLog + message;
-	std::cout << "[L]" << messageLog << std::endl;
+	std::cout << messageLog << std::endl;
 	this->insertLog(messageLog);
 
 	this->_mtx.unlock();

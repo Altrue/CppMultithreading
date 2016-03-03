@@ -115,7 +115,7 @@ void crackpw(std::string p_hash, std::string target_hash) {
 
 	strcpy_s(password, sizeof(password), "");
 	bool isRunning = true;
-	logger->newMessage(0, "Recherche en cours...");
+	logger->newMessage(0, "Recherche en cours... | " + p_hash + " | " + target_hash);
 	do {
 		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
 		currentHash = hasher->calculateHash(password);
