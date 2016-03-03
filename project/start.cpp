@@ -7,6 +7,7 @@
 #include "CException.h"
 #include "PasswordChunk.h"
 #include "Hasher.h"
+#include "Logger.h"
 
 #include "IHash.h"
 #include "CHashNone.h"
@@ -16,6 +17,7 @@
 #include "CHashSha224.h"
 #include "CHashSha256.h"
 #include "CException.h"
+#include "start.h"
 
 
 
@@ -104,26 +106,30 @@ void crackpw(std::string p_hash, std::string target_hash) {
 	char password[64] = "";
 	std::string testAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 	std::string currentHash = "";
-	Hasher hasher = Hasher::getInstance(p_hash);
+	Logger *logger;
+	Hasher *hasher;
+
+	hasher = Hasher::getInstance();
+	hasher->initialize(p_hash);
+	logger = Logger::getInstance();
 
 	strcpy_s(password, sizeof(password), "");
 	bool isRunning = true;
-	std::cout << "" << std::endl;
-	std::cout << "Recherche en cours..." << std::endl;
-	std::cout << "" << std::endl;
+	logger->newMessage(0, "Recherche en cours...");
 	do {
 		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
-		currentHash = hasher.calculateHash(password);
+		currentHash = hasher->calculateHash(password);
 		//std::cout << password << " -> " << currentHash << "" << std::endl;
 
 		if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
-			std::cout << "Trouve ! Le mot de passe est : " << password << std::endl;
+			std::string foundMessage = "Trouve ! Le mot de passe est : ";
+			logger->newMessage(0, foundMessage.append(password));
 			isRunning = false;
 		}
 
 		if (GetAsyncKeyState(VK_ESCAPE) != 0) {
 			isRunning = false;
-			std::cout << "Arret demande par l'utilisateur" << std::endl;
+			logger->newMessage(0, "Arret demande par l'utilisateur");
 		}
 
 	} while (isRunning);
@@ -132,8 +138,7 @@ void crackpw(std::string p_hash, std::string target_hash) {
 
 
 int main( int argc, const char *argv[] ) {
-	std::cout << "** Welcome to this project skeleton." << std::endl;
-	std::cout << "This is where you need to code the hash cracker." << std::endl;
+	std::cout << "Projet Multithreading : Alois - Tristan - Jeremy" << std::endl;
 	std::cout << std::endl;
 
 	//ExtractCommandLine( argc, argv );

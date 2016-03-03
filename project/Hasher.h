@@ -15,14 +15,17 @@
 #include "CHashSha256.h"
 #include "CException.h"
 
+#include "singleton.h"
+
 class Hasher
 {
+	IMPLEMENT_SINGLETON(Hasher);
+
 private:
-	static Hasher &instance;
-	IHash *hasher;
+	IHash *iHasher;
 	Hasher(std::string hashName);
 public:
-	static Hasher Hasher::getInstance(std::string hashName);
+	void initialize(std::string hashName);
 	std::string calculateHash(const std::string p_text);
 	~Hasher();
 };

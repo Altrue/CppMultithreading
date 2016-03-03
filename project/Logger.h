@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stdafx.h"
 #include <fstream>
 #include <stdarg.h>
 #include <iostream>
@@ -12,31 +13,32 @@
 #define ERROR " Error: "
 #define ALERT " Alert : "
 
-using namespace std;
 #include "FMutex.h"
 #include "CDateTime.h"
 #include <sstream>
 #include <string>
+#include "singleton.h"
 
 class Logger
 {
+	IMPLEMENT_SINGLETON(Logger);
+
 	private:
-		string _fileName = "dhc.log";
+		std::string _fileName = "dhc.log";
 		FMutex _mtx;
-		//récupération de la date à partir de la class du prof
-		string getTimeStamp();
-		//insertion dans le fichier
-		void insertLog(string pContent);
+		// Récupération de la date à partir de la class du prof
+		std::string getTimeStamp();
+		// Insertion dans le fichier
+		void insertLog(std::string pContent);
 
 	public:
-		//les niveau de log
+		// Les niveaux de log
 		const int LEVEL_INFO = 0;
 		const int LEVEL_ERROR = 3;
 		const int LEVEL_ALERT = 2;
 		const int LEVEL_WARN = 1;
-		Logger();
 		~Logger();
-		//fonction utilisée pour créer les logs (thread-safe)
-		void newMessage(int pLevel, string message);
-};
+		// Fonction utilisée pour créer les logs (thread-safe)
+		void newMessage(int pLevel, std::string message);
 
+};

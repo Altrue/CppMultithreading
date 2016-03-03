@@ -1,23 +1,21 @@
 #include "Logger.h"
 
-Logger::Logger()
-{
-}
-
+// Public
 Logger::~Logger()
 {
+
 }
 
-void Logger::insertLog(string pContent)
+void Logger::insertLog(std::string pContent)
 {
-	ofstream fichier(this->_fileName, ios::out | ios::app);  // ouverture en écriture avec effacement du fichier ouvert
+	std::ofstream fichier(this->_fileName, std::ios::out | std::ios::app);  // ouverture en écriture avec effacement du fichier ouvert
 	if (fichier){
-		fichier << pContent << endl;
+		fichier << pContent << std::endl;
 		fichier.close();
 	}
 }
 
-string Logger::getTimeStamp()
+std::string Logger::getTimeStamp()
 {
 	CDateTime date;
 	std::stringstream out;
@@ -26,11 +24,11 @@ string Logger::getTimeStamp()
 	return out.str();
 }
 
-void Logger::newMessage(int pLevel, string message)
+void Logger::newMessage(int pLevel, std::string message)
 {
 	this->_mtx.lock();
 
-	string messageLog;
+	std::string messageLog;
 
 	messageLog = messageLog + this->getTimeStamp();
 
@@ -48,7 +46,7 @@ void Logger::newMessage(int pLevel, string message)
 	}
 
 	messageLog = messageLog + message;
-
+	std::cout << "[L]" << messageLog << std::endl;
 	this->insertLog(messageLog);
 
 	this->_mtx.unlock();

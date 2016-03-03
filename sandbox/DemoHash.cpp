@@ -17,6 +17,7 @@
 
 
 std::string test_hash( IHash *p_hasher, const std::string p_fileName, const std::string p_text ) {
+	/*
 	//std::cout << "Testing hash library " << typeid(p_hasher).name() << "." << std::endl;
 
 	// Info
@@ -42,7 +43,6 @@ std::string test_hash( IHash *p_hasher, const std::string p_fileName, const std:
 	//std::cout << "- From buffer..." << std::endl;
 	try {
 		unsigned char rawHash[ 128 ];
-
 		p_hasher->HashBuffer( reinterpret_cast<const unsigned char *>(p_text.c_str()), static_cast<int>(p_text.length()) );
 		//std::cout << "- Hash is " << p_hasher->GetHash() << std::endl;
 		p_hasher->GetRawHash( &rawHash[ 0 ], sizeof(rawHash) );
