@@ -106,7 +106,7 @@ void EnqueueDequeue() {
 //	Hash à décoder
 void crackpw(std::string p_hash, std::string target_hash) {
 	char password[64] = "";
-	std::string testAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+	std::string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789*"; // Alphabet incomplet. | Bien laisser * à la fin.
 	std::string currentHash = "";
 	Logger *logger;
 	Hasher *hasher;
@@ -116,36 +116,84 @@ void crackpw(std::string p_hash, std::string target_hash) {
 	hasher->initialize(p_hash);
 	logger = Logger::getInstance();
 
-	CPasswordChunk chunktest;
-	chunktest.Reset();
-	chunktest.SetPasswordRange("00000aa", "00000**");
+	CPasswordChunk pwdChunk;
+	pwdChunk.Reset();
+	pwdChunk.SetPasswordRange("00000aa", "00000**");
 
 	// On teste que la FIFO marche bien.
-	logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
-	pwdFifo->push(chunktest);
-	logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
-	// Fin test fifo (à retirer plus tard)
+	//logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
+	//pwdFifo->push(pwdChunk);
+	//logger->newMessage(0, "Taille Chunk : " + std::to_string(pwdChunk.GetChunkSize()));
+	//logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
+	// Fin test fifo
+	
+	bool passwordFound = false; // Bool de Mot de passe trouvé
+	bool isAborted = false;		// Bool de Arrêt avant mot de passe trouvé
+	bool isRunning;
 
+	const int MAX_PWD_LENGTH = 5; // Taille max du password - 2
+	char currentChunkStart[MAX_PWD_LENGTH] = "";	// Mot de passe max actuel +1, dans la FIFO (on rajoute aa et ** pour le début / fin)
+	//std::string temp = "00000";	
+	//strcpy_s(pwdStartEndMain, temp.c_str());
+
+	std::string pwdStartTemp;	// Stockage temporaire du password de début de chunk
+	std::string pwdEndTemp;		// Stockage temporaire du password de fin de chunk
+
+	// Boucle Principale
 	strcpy_s(password, sizeof(password), "");
-	bool isRunning = true;
 	logger->newMessage(0, "Recherche en cours... | " + p_hash + " | " + target_hash);
 	do {
-		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
-		currentHash = hasher->calculateHash(password);
-		//std::cout << password << " -> " << currentHash << "" << std::endl;
+		isRunning = true; // Bool de Recherche en cours
 
-		if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
-			std::string foundMessage = "Trouve ! Le mot de passe est : ";
-			logger->newMessage(0, foundMessage.append(password));
-			isRunning = false;
+		// Remplissage dela FIFO si taille inférieure à 3
+		if (pwdFifo->getSize() < 3) {
+			// Boucle de remplissage de la FIFO
+			while (pwdFifo->getSize() < 10) {
+				pwdChunk.Reset();
+				HashCrackerUtils::IncreasePassword(currentChunkStart, MAX_PWD_LENGTH, alphabet);
+
+				pwdStartTemp = currentChunkStart;
+				pwdStartTemp = pwdStartTemp + "aa";
+				pwdEndTemp = currentChunkStart;
+				pwdEndTemp = pwdEndTemp + "**";
+
+				pwdChunk.SetPasswordRange(pwdStartTemp, pwdEndTemp);
+
+				pwdFifo->push(pwdChunk);
+				logger->newMessage(0, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp + " | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+			}
 		}
 
-		if (GetAsyncKeyState(VK_ESCAPE) != 0) {
-			isRunning = false;
-			logger->newMessage(0, "Arret demande par l'utilisateur");
-		}
+		pwdChunk = pwdFifo->pull();
+		strcpy_s(password, sizeof(pwdChunk.GetPasswordBegin().c_str()), pwdChunk.GetPasswordBegin().c_str()); // Conversion du string de début du chunk en char[]
 
-	} while (isRunning);
+		// Boucle de traitement d'un chunk
+		logger->newMessage(0, "Debut lecture du chunk...");
+		do {
+			HashCrackerUtils::IncreasePassword(password, sizeof(password), alphabet);
+			currentHash = hasher->calculateHash(password);
+			//std::cout << password << " -> " << currentHash << "" << std::endl;
+
+			if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
+				std::string foundMessage = "Trouve ! Le mot de passe est : ";
+				logger->newMessage(0, foundMessage.append(password));
+				isRunning = false;
+				passwordFound = true;
+			}
+
+			if (GetAsyncKeyState(VK_ESCAPE) != 0) {
+				isRunning = false;
+				isAborted = true;
+				logger->newMessage(0, "Arret demande par l'utilisateur");
+			}
+
+			if (std::string(password) == pwdChunk.GetPasswordEnd()) {
+				isRunning = false;
+				logger->newMessage(0, "...Fin lecture du chunk | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+			}
+
+		} while (isRunning); // Fin boucle traitement chunk
+	} while (!passwordFound && !isAborted); // Fin boucle principale
 	return;
 }
 
