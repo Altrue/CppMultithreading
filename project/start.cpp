@@ -119,33 +119,24 @@ void crackpw(std::string p_hash, std::string target_hash) {
 	CPasswordChunk pwdChunk;
 	pwdChunk.Reset();
 	pwdChunk.SetPasswordRange("00000aa", "00000**");
-
-	// On teste que la FIFO marche bien.
-	//logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
-	//pwdFifo->push(pwdChunk);
-	//logger->newMessage(0, "Taille Chunk : " + std::to_string(pwdChunk.GetChunkSize()));
-	//logger->newMessage(0, "Taille FIFO actuelle : " + std::to_string(pwdFifo->getSize()) + " chunks");
-	// Fin test fifo
 	
-	bool passwordFound = false; // Bool de Mot de passe trouvé
-	bool isAborted = false;		// Bool de Arrêt avant mot de passe trouvé
-	bool isRunning;
+	bool passwordFound = false;		// Bool de Mot de passe trouvé
+	bool isAborted = false;			// Bool de Arrêt avant mot de passe trouvé
+	bool isRunning;					// Bool de Recherche en cours
 
-	const int MAX_PWD_LENGTH = 5; // Taille max du password - 2
-	char currentChunkStart[MAX_PWD_LENGTH] = "";	// Mot de passe max actuel +1, dans la FIFO (on rajoute aa et ** pour le début / fin)
-	//std::string temp = "00000";	
-	//strcpy_s(pwdStartEndMain, temp.c_str());
+	const int MAX_PWD_LENGTH = 5;	// Taille max du mot de passe pour incrémenter les chunks. Pour les tests on le laisse petit.
+	char currentChunkStart[MAX_PWD_LENGTH] = "";	// Mot de passe pour incrémenter les chunks.
 
-	std::string pwdStartTemp;	// Stockage temporaire du password de début de chunk
-	std::string pwdEndTemp;		// Stockage temporaire du password de fin de chunk
+	std::string pwdStartTemp;		// Password de début de chunk.
+	std::string pwdEndTemp;			// Password de fin de chunk.
 
 	// Boucle Principale
 	strcpy_s(password, sizeof(password), "");
 	logger->newMessage(0, "Recherche en cours... | " + p_hash + " | " + target_hash);
 	do {
-		isRunning = true; // Bool de Recherche en cours
+		isRunning = true; 
 
-		// Remplissage dela FIFO si taille inférieure à 3
+		// Remplissage dela FIFO si taille moins de 3 chunks restants.
 		if (pwdFifo->getSize() < 3) {
 			// Boucle de remplissage de la FIFO
 			while (pwdFifo->getSize() < 10) {
@@ -161,7 +152,7 @@ void crackpw(std::string p_hash, std::string target_hash) {
 
 				pwdFifo->push(pwdChunk);
 				logger->newMessage(0, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp + " | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
-			}
+			} // Fin boucle remplissage FIFO
 		}
 
 		pwdChunk = pwdFifo->pull();
@@ -172,9 +163,11 @@ void crackpw(std::string p_hash, std::string target_hash) {
 		do {
 			HashCrackerUtils::IncreasePassword(password, sizeof(password), alphabet);
 			currentHash = hasher->calculateHash(password);
+
+			//Décommentez cette ligne ci-dessous pour afficher les tentatives une à une :
 			//std::cout << password << " -> " << currentHash << "" << std::endl;
 
-			if (currentHash == target_hash) {//"884863D2" -> 123 || "2D640152" -> 900
+			if (currentHash == target_hash) { //CRC32 : "884863D2" = 123 | "2D640152" = 900
 				std::string foundMessage = "Trouve ! Le mot de passe est : ";
 				logger->newMessage(0, foundMessage.append(password));
 				isRunning = false;
