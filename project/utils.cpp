@@ -2,7 +2,7 @@
 #include "CException.h"
 
 
-void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], std::string &p_hash, std::string &p_algo, std::string &p_alphabet, unsigned int &p_chunkSize, std::string &p_masterIpAddress, bool &p_slaveMode) {
+void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], std::string &p_hash, std::string &p_algo, std::string &p_alphabet, unsigned int &p_chunkSize, std::string &p_masterIpAddress, bool &p_slaveMode, bool &p_forceNew) {
 	int i = 1;			// Because argv[0] contains the full path to program name --> real parameters start at position 1
 
 	// Default values
@@ -35,6 +35,10 @@ void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], 
 			}
 			else if ( _strcmpi("-ip", p_argv[i] ) == 0 ) {
 				p_masterIpAddress = p_argv[i + 1];
+				i++;												// skip associated value for next iteration
+			}
+			else if (_strcmpi("-forcenew", p_argv[i]) == 0) {
+				p_forceNew = true;
 				i++;												// skip associated value for next iteration
 			}
 		}
