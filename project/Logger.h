@@ -8,10 +8,11 @@
 #include <vector>
 #include <string>
 
-#define INFO  " Info : "
-#define WARN  " Warn : "
-#define ERROR " Error: "
+#define ERROR " Error : "
 #define ALERT " Alert : "
+#define WARN  " Warn : "
+#define INFO  " Info : "
+#define DETAIL " Detail : "
 
 #include "FMutex.h"
 #include "CDateTime.h"
@@ -33,10 +34,13 @@ class Logger
 
 	public:
 		// Les niveaux de log
-		const int LEVEL_INFO = 0;
-		const int LEVEL_ERROR = 3;
-		const int LEVEL_ALERT = 2;
-		const int LEVEL_WARN = 1;
+		void initialize(int level);
+		const int LEVEL_ERROR = 0;
+		const int LEVEL_ALERT = 1;
+		const int LEVEL_WARN = 2;
+		const int LEVEL_INFO = 3;
+		const int LEVEL_DEBUG = 4;
+		int verboseLevel;
 		~Logger();
 		// Fonction utilisée pour créer les logs (thread-safe)
 		void newMessage(int pLevel, std::string message);

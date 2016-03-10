@@ -6,6 +6,10 @@ Logger::~Logger()
 
 }
 
+void Logger::initialize(int level) {
+	this->verboseLevel = level;
+}
+
 void Logger::insertLog(std::string pContent)
 {
 	std::ofstream fichier(this->_fileName, std::ios::out | std::ios::app);  // ouverture en écriture avec effacement du fichier ouvert
@@ -56,13 +60,18 @@ void Logger::newMessage(int pLevel, std::string message)
 	else if (pLevel == this->LEVEL_INFO) {
 		messageLog = messageLog + " INFO : ";
 	}
+	else if (pLevel == this->LEVEL_DEBUG) {
+		messageLog = messageLog + " DEBUG : ";
+	}
 	else if (pLevel == this->LEVEL_WARN) {
 		messageLog = messageLog + " WARNING : ";
 	}
 
 	messageLog = messageLog + message;
 	std::cout << messageLog << std::endl;
-	this->insertLog(messageLog);
+	if (pLevel <= this->verboseLevel) {
+		this->insertLog(messageLog);
+	}
 
 	this->_mtx.unlock();
 }

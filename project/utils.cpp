@@ -45,8 +45,9 @@ void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], 
 	if ( p_masterIpAddress.length() > 0 ) {
 		// Assume slave mode
 		p_slaveMode = true;
-		if (p_hash.length() > 0 || p_algo.length() > 0 || p_alphabet.length() > 0 || p_chunkSize > 0)
-			throw _CException ( "Invaid command line.", 0 );
+		if (p_hash.length() > 0 || p_algo.length() > 0 || p_alphabet.length() > 0 || p_chunkSize > 0) {
+			throw _CException("Invalid command line.", 0);
+		}
 	}
 	else {
 		// Assume master mode

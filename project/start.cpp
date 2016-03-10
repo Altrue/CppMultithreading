@@ -22,8 +22,7 @@
 #include "start.h"
 
 
-
-void ExtractCommandLine( int argc, const char *argv[] )	{
+bool ExtractCommandLine( int argc, const char *argv[] )	{
 	// Command line settings
 	// Tip: good to be stored in a singleton dedicated to configuration	--> see singleton.h
 	std::string hash, algo, alphabet, masterIpAddress;
@@ -36,7 +35,7 @@ void ExtractCommandLine( int argc, const char *argv[] )	{
 	}
 	catch(CException &ex) {
 		std::cerr << "** Command line extraction failed at \"" << ex.GetFaultLocation() << "\" with error code " << ex.GetErrorCode() << " and message \"" << ex.GetErrorMessage() << "\"" << std::endl;
-		return;
+		return false;
 	}
 
 	// Show information
@@ -51,6 +50,8 @@ void ExtractCommandLine( int argc, const char *argv[] )	{
 		std::cout << "-alphabet " << alphabet << std::endl;
 		std::cout << "-chunksize " << chunkSize << std::endl;
 	}
+
+	return true;
 }
 
 
@@ -104,35 +105,45 @@ void EnqueueDequeue() {
 //
 // Argument 2
 //	Hash à décoder
-void crackpw(std::string p_hash, std::string target_hash) {
+void crackpw(std::string target_hash, std::string p_algo, std::string p_alphabet, std::string p_chunksize) {
 	char password[64] = "";
-	std::string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789*"; // Alphabet incomplet. | Bien laisser * à la fin.
+	std::string alphabet = p_alphabet;
 	std::string currentHash = "";
 	Logger *logger;
 	Hasher *hasher;
 	Fifo<CPasswordChunk> *pwdFifo = new Fifo<CPasswordChunk>();
 
 	hasher = Hasher::getInstance();
-	hasher->initialize(p_hash);
+	hasher->initialize(p_algo);
 	logger = Logger::getInstance();
+	logger->initialize(3);					// On indique ici le niveau de verbosité du logger.
+	logger->newMessage(1, "Lancement du programme.");
 
 	CPasswordChunk pwdChunk;
-	pwdChunk.Reset();
-	pwdChunk.SetPasswordRange("00000aa", "00000**");
 	
-	bool passwordFound = false;		// Bool de Mot de passe trouvé
-	bool isAborted = false;			// Bool de Arrêt avant mot de passe trouvé
-	bool isRunning;					// Bool de Recherche en cours
+	bool passwordFound = false;				// Bool de Mot de passe trouvé
+	bool isAborted = false;					// Bool de Arrêt avant mot de passe trouvé
+	bool isRunning;							// Bool de Recherche en cours
 
-	const int MAX_PWD_LENGTH = 5;	// Taille max du mot de passe pour incrémenter les chunks. Pour les tests on le laisse petit.
-	char currentChunkStart[MAX_PWD_LENGTH] = "";	// Mot de passe pour incrémenter les chunks.
+	const int MAX_PWD_LENGTH = 10;			// Taille max du mot de passe à trouver. (Rajouter 2)
+	const int chunkSize = (atoi(p_chunksize.c_str()) - 2);	// -2 vu qu'on rajoute deux lettres à la fin du chunk quoi qu'il arrive.
+	char currentChunkStart[MAX_PWD_LENGTH] = "";	// "Meta" Mot de passe pour incrémenter les chunks.
 
-	std::string pwdStartTemp;		// Password de début de chunk.
-	std::string pwdEndTemp;			// Password de fin de chunk.
+	// Définition : Un Meta Mot de passe est utilisé pour calculer les chunks. On rajoute "aa" ou "**", pour trouver le début / fin du chunk. Exemple : "hij" = "hijaa" -> "hij**"
+
+	char firstLetter = alphabet.back();		// Dernière lettre de l'alphabet
+	std::string firstPwd = "";				// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
+	for (int i = 1; i < chunkSize; i++) {	// "" donne un premier chunk de aaa -> a**
+		firstPwd += firstLetter;			// "*" donne un premier chunk de "aaaa" -> "aa**", etc...		
+	}
+	strcpy_s(currentChunkStart, sizeof(firstPwd), firstPwd.c_str());
+
+	std::string pwdStartTemp;		// "Meta" Password de début de chunk.
+	std::string pwdEndTemp;			// "Meta" Password de fin de chunk.
 
 	// Boucle Principale
 	strcpy_s(password, sizeof(password), "");
-	logger->newMessage(0, "Recherche en cours... | " + p_hash + " | " + target_hash);
+	logger->newMessage(3, "Recherche en cours... | " + p_algo + " | " + target_hash);
 	do {
 		isRunning = true; 
 
@@ -151,15 +162,25 @@ void crackpw(std::string p_hash, std::string target_hash) {
 				pwdChunk.SetPasswordRange(pwdStartTemp, pwdEndTemp);
 
 				pwdFifo->push(pwdChunk);
-				logger->newMessage(0, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp + " | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+				logger->newMessage(4, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp + " | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+
+				if (GetAsyncKeyState(VK_ESCAPE) != 0) {
+					isAborted = true;
+					logger->newMessage(0, "Arret demande par l'utilisateur");
+					break;
+				}
 			} // Fin boucle remplissage FIFO
 		}
 
+		if (isAborted) {
+			break;
+		}
+
 		pwdChunk = pwdFifo->pull();
-		strcpy_s(password, sizeof(pwdChunk.GetPasswordBegin().c_str()), pwdChunk.GetPasswordBegin().c_str()); // Conversion du string de début du chunk en char[]
+		strncpy_s(password, pwdChunk.GetPasswordBegin().c_str(), _TRUNCATE); // Conversion du string de début du chunk en char[]
 
 		// Boucle de traitement d'un chunk
-		logger->newMessage(0, "Debut lecture du chunk...");
+		logger->newMessage(4, "Debut lecture du chunk...");
 		do {
 			HashCrackerUtils::IncreasePassword(password, sizeof(password), alphabet);
 			currentHash = hasher->calculateHash(password);
@@ -169,9 +190,14 @@ void crackpw(std::string p_hash, std::string target_hash) {
 
 			if (currentHash == target_hash) { //CRC32 : "884863D2" = 123 | "2D640152" = 900
 				std::string foundMessage = "Trouve ! Le mot de passe est : ";
-				logger->newMessage(0, foundMessage.append(password));
+				logger->newMessage(3, foundMessage.append(password));
 				isRunning = false;
 				passwordFound = true;
+			}
+
+			if (std::string(password) == pwdChunk.GetPasswordEnd()) {
+				isRunning = false;
+				logger->newMessage(4, "...Fin lecture du chunk | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
 			}
 
 			if (GetAsyncKeyState(VK_ESCAPE) != 0) {
@@ -179,15 +205,8 @@ void crackpw(std::string p_hash, std::string target_hash) {
 				isAborted = true;
 				logger->newMessage(0, "Arret demande par l'utilisateur");
 			}
-
-			if (std::string(password) == pwdChunk.GetPasswordEnd()) {
-				isRunning = false;
-				logger->newMessage(0, "...Fin lecture du chunk | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
-			}
-
 		} while (isRunning); // Fin boucle traitement chunk
 	} while (!passwordFound && !isAborted); // Fin boucle principale
-	return;
 }
 
 
@@ -195,14 +214,27 @@ int main( int argc, const char *argv[] ) {
 	std::cout << "Projet Multithreading : Alois - Tristan - Jeremy" << std::endl;
 	std::cout << std::endl;
 
-	//ExtractCommandLine( argc, argv );
 	//GeneratePasswords();
 	//EnqueueDequeue();
 
-	crackpw(argv[1], argv[2]);
+	// On vérifie si les arguments sont bon ou pas.
+	if (ExtractCommandLine(argc, argv)) {
+		crackpw(argv[2], argv[4], argv[6], argv[8]);
+	}
+	else {
+		std::cout << std::endl;
+		std::cout << "Mauvais arguments de ligne de commande." << std::endl;
+
+		// Display each command-line argument.
+		std::cout << "Voici les arguments trouvés :" << std::endl;
+		for (int count = 0; count < argc; count++) {
+			std::cout << "  argv[" << count << "]   " << argv[count] << std::endl;
+		}
+		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 4
+	}
 
 	std::cout << std::endl;
-	std::cout << "** Goodbye" << std::endl;
+	std::cout << "Fermeture du programme." << std::endl;
 	std::cin.get();
 	return EXIT_SUCCESS;
 }
