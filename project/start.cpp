@@ -132,11 +132,12 @@ void crackpw(std::string target_hash, std::string p_algo, std::string p_alphabet
 	// Définition : Un Meta Mot de passe est utilisé pour calculer les chunks. On rajoute "aa" ou "**", pour trouver le début / fin du chunk. Exemple : "hij" = "hijaa" -> "hij**"
 
 	char firstLetter = alphabet.back();		// Dernière lettre de l'alphabet
-	std::string firstPwd = "";				// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
-	for (int i = 1; i < chunkSize; i++) {	// "" donne un premier chunk de aaa -> a**
+	std::string firstPwd;					// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
+	for (int i = 1; i < chunkSize && i < MAX_PWD_LENGTH; i++) {	// "" donne un premier chunk de aaa -> a**
 		firstPwd += firstLetter;			// "*" donne un premier chunk de "aaaa" -> "aa**", etc...		
 	}
-	strcpy_s(currentChunkStart, sizeof(firstPwd), firstPwd.c_str());
+
+	strncpy_s(currentChunkStart, firstPwd.c_str(), _TRUNCATE);
 
 	std::string pwdStartTemp;		// "Meta" Password de début de chunk.
 	std::string pwdEndTemp;			// "Meta" Password de fin de chunk.
@@ -166,7 +167,7 @@ void crackpw(std::string target_hash, std::string p_algo, std::string p_alphabet
 
 				if (GetAsyncKeyState(VK_ESCAPE) != 0) {
 					isAborted = true;
-					logger->newMessage(0, "Arret demande par l'utilisateur");
+					logger->newMessage(1, "Arret demande par l'utilisateur");
 					break;
 				}
 			} // Fin boucle remplissage FIFO
