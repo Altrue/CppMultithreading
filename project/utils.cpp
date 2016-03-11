@@ -14,7 +14,7 @@ void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], 
 
 	// Extract parameters using C style
 	while( i < p_argc ) {
-		if ( i + 1 < p_argc ) {										// Because all parameters are in the form (-${key}, ${value}), ensure the ${value} can be extracted
+		if ( i + 1 <= p_argc ) {										// Because all parameters are in the form (-${key}, ${value}), ensure the ${value} can be extracted
 			if ( _strcmpi("-hash", p_argv[i] ) == 0 ) {
 				p_hash = p_argv[i + 1];
 				i++;												// skip associated value for next iteration
@@ -38,8 +38,7 @@ void HashCrackerUtils::ParseCommandLine(const int p_argc, const char *p_argv[], 
 				i++;												// skip associated value for next iteration
 			}
 			else if (_strcmpi("-forcenew", p_argv[i]) == 0) {
-				p_forceNew = true;
-				i++;												// skip associated value for next iteration
+				p_forceNew = true;										// skip associated value for next iteration
 			}
 		}
 		i++;

@@ -320,7 +320,8 @@ int main( int argc, const char *argv[] ) {
 		for (int count = 0; count < argc; count++) {
 			std::cout << "  argv[" << count << "]   " << argv[count] << std::endl;
 		}
-		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 3
+		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 3 
+		// (optionnel -forcenew pour ignorer la reprise d'une sauvegarde)
 	}
 
 	std::cout << std::endl;
