@@ -188,7 +188,7 @@ void crackpw(Logger *logger, std::string p_target_hash, std::string p_algo, std:
 		}
 
 		if (isAborted) {
-			std::ofstream fichier("reprise_chunk.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+			std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
 			if (fichier) {
 				fichier << alphabet << std::endl;
 				fichier << pwdChunk.GetPasswordBegin() << std::endl;
@@ -232,7 +232,7 @@ void crackpw(Logger *logger, std::string p_target_hash, std::string p_algo, std:
 	} while (!passwordFound && !isAborted); // Fin boucle principale
 
 	if (isAborted) {
-		std::ofstream fichier("reprise_chunk.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+		std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
 		if (fichier) {
 			fichier << alphabet << std::endl;
 			fichier << pwdChunk.GetPasswordBegin() << std::endl;
@@ -242,7 +242,7 @@ void crackpw(Logger *logger, std::string p_target_hash, std::string p_algo, std:
 		}
 	}
 	else if (passwordFound) {
-		std::ofstream fichier("reprise_chunk.txt", std::ios::out | std::ios::trunc);
+		std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);
 		fichier.close();
 	}
 }
@@ -268,7 +268,7 @@ int main( int argc, const char *argv[] ) {
 
 		// Vérification de la présence possible d'une sauvegarde.
 		std::string fileLine, startOldChunk, endOldChunk, alphabet, algo, hashCible;
-		std::ifstream f("reprise_chunk.txt");
+		std::ifstream f("statut.txt");
 		bool needsResume = false;
 		int lineCounter = 1;
 		while (std::getline(f, fileLine)) {
