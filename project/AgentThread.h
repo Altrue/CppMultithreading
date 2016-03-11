@@ -6,9 +6,10 @@ class AgentThread
 {
 private:
 	std::string t_hash;
+	~AgentThread();
 
 public:
 	AgentThread();
-	~AgentThread();
+	void killAgent();
 };
 

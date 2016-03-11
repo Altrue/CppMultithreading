@@ -5,11 +5,11 @@
 
 #include "utils.h"
 #include "CException.h"
-#include "PasswordChunk.h"
 #include "Hasher.h"
 #include "Logger.h"
 #include "Fifo.cpp"
 #include "PasswordChunk.h"
+#include "LocalOrdonnancer.h"
 
 #include "IHash.h"
 #include "CHashNone.h"
@@ -107,7 +107,7 @@ void crackpw(Logger *logger, std::string p_target_hash, std::string p_algo, std:
 	char password[64] = "";
 	std::string alphabet = p_alphabet;
 	std::string currentHash = "";
-	const int coreCount = CUtil::GetCpuCoreCount();
+	
 
 	Hasher *hasher;
 	Fifo<CPasswordChunk> *pwdFifo = new Fifo<CPasswordChunk>();
@@ -252,8 +252,15 @@ int main( int argc, const char *argv[] ) {
 	std::cout << "Projet Multithreading : Alois - Tristan - Jeremy" << std::endl;
 	std::cout << std::endl;
 
+	/*
+	//Juste pour tester la création d'agents.
+	LocalOrdonnancer* localOrdo = new LocalOrdonnancer();
+	std::cout << "PAUSE PIPI" << std::endl;
+	*/
+
 	//GeneratePasswords();
 	//EnqueueDequeue();
+
 
 	Logger *logger;
 	logger = Logger::getInstance();
@@ -327,5 +334,6 @@ int main( int argc, const char *argv[] ) {
 	std::cout << std::endl;
 	std::cout << "Fermeture du programme." << std::endl;
 	std::cin.get();
+
 	return EXIT_SUCCESS;
 }
