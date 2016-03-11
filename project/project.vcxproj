@@ -225,7 +225,9 @@
     <ClInclude Include="..\libs\util\include\CUtil.h" />
     <ClInclude Include="AgentThread.h" />
     <ClInclude Include="Fifo.h" />
+    <ClInclude Include="GlobalOrdonnancer.h" />
     <ClInclude Include="Hasher.h" />
+    <ClInclude Include="LocalOrdonnancer.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="FMutex.h" />
     <ClInclude Include="PasswordChunk.h" />
@@ -238,7 +240,9 @@
   <ItemGroup>
     <ClCompile Include="AgentThread.cpp" />
     <ClCompile Include="Fifo.cpp" />
+    <ClCompile Include="GlobalOrdonnancer.cpp" />
     <ClCompile Include="Hasher.cpp" />
+    <ClCompile Include="LocalOrdonnancer.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="FMutex.cpp" />
     <ClCompile Include="PasswordChunk.cpp" />

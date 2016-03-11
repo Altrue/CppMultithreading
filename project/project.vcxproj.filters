@@ -158,6 +158,12 @@
     <ClInclude Include="start.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LocalOrdonnancer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalOrdonnancer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -185,6 +191,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hasher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalOrdonnancer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalOrdonnancer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
