@@ -8,12 +8,6 @@
 #include <vector>
 #include <string>
 
-#define ERROR " Error : "
-#define ALERT " Alert : "
-#define WARN  " Warn : "
-#define INFO  " Info : "
-#define DETAIL " Detail : "
-
 #include "FMutex.h"
 #include "CDateTime.h"
 #include <sstream>

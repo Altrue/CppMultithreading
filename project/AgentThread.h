@@ -1,8 +1,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <iostream>
+#include "Observer.h"
 
-class AgentThread
+class AgentThread: public Observable
 {
 private:
 	std::string t_hash;
@@ -10,6 +13,7 @@ private:
 
 public:
 	AgentThread();
+	int returnCode = 0;
 	void killAgent();
 };
 

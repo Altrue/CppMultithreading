@@ -252,12 +252,14 @@ int main( int argc, const char *argv[] ) {
 	std::cout << "Projet Multithreading : Alois - Tristan - Jeremy" << std::endl;
 	std::cout << std::endl;
 
-	/*
+	
 	//Juste pour tester la création d'agents.
 	LocalOrdonnancer* localOrdo = new LocalOrdonnancer();
-	std::cout << "PAUSE PIPI" << std::endl;
-	*/
+	localOrdo->putDownAgents();
 
+	std::cout << "La suite est en commentaire donc elle ne s'execute pas" << std::endl;
+
+/*
 	//GeneratePasswords();
 	//EnqueueDequeue();
 
@@ -330,6 +332,8 @@ int main( int argc, const char *argv[] ) {
 		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 3 
 		// (optionnel -forcenew pour ignorer la reprise d'une sauvegarde)
 	}
+
+*/
 
 	std::cout << std::endl;
 	std::cout << "Fermeture du programme." << std::endl;
