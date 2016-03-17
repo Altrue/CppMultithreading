@@ -1,8 +1,8 @@
 #include "LocalOrdonnancer.h"
 
-LocalOrdonnancer::LocalOrdonnancer()
+LocalOrdonnancer::LocalOrdonnancer(std::string t_hash)
 {
-	createAgents();
+	createAgents(t_hash);
 }
 
 
@@ -11,10 +11,10 @@ LocalOrdonnancer::~LocalOrdonnancer()
 
 }
 
-void LocalOrdonnancer::createAgents()
+void LocalOrdonnancer::createAgents(std::string t_hash)
 {
 	for (int n = 0; n < this->coreCount; n++) {
-		AgentThread* thread = new AgentThread();
+		AgentThread* thread = new AgentThread(t_hash);
 		thread->attach(this);
 		std::cout << "AgentThread " << n << " est desormais observe !" << std::endl;
 		this->vectorAgents.push_back(thread);
@@ -30,11 +30,24 @@ void LocalOrdonnancer::putDownAgents()
 	this->vectorAgents.clear();
 }
 
-void LocalOrdonnancer::update()
+void LocalOrdonnancer::update(int returnCode, std::string returnPassword)
 {
-	// Mis à jour car un sujet a changé d'état
-	std::cout << "L'observateur a ete notifie de quelque chose." << std::endl;
-	// Pour le moment on a aucune info, on regarde juste que ça marche.
+	// Mis à jour car un sujet a une info à faire parvenir
+	if (returnCode == 0) {
+		std::cout << "L'observateur a ete notifie de la mort d'un AgentThread" << std::endl;
+	}
+	else if (returnCode == 1) {
+		std::cout << "L'observateur sait que le mot de passe a ete trouve : " << returnPassword << std::endl;
+		this->putDownAgents(); // On arrête donc les agents.
+		// TODO : Transmettre la bonne nouvelle (et returnPassword) à l'ordonanceur global
+	}
+	else if (returnCode == -1) {
+		std::cout << "L'observateur a ete notifie d'un message mais le dev a oublie de changer le returnCode donc on ne sait pas ce que c'est..." << std::endl;
+	}
+	else {
+		std::cout << "L'observateur a ete notifie d'un message mais le dev a invente un nouveau returnCode qui n'existe pas..." << std::endl;
+	}
+	
 }
 
 

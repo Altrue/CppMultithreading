@@ -254,12 +254,10 @@ int main( int argc, const char *argv[] ) {
 
 	
 	//Juste pour tester la création d'agents.
-	LocalOrdonnancer* localOrdo = new LocalOrdonnancer();
+	LocalOrdonnancer* localOrdo = new LocalOrdonnancer("Mettre le hash ici");
 	localOrdo->putDownAgents();
 
-	std::cout << "La suite est en commentaire donc elle ne s'execute pas" << std::endl;
-
-/*
+	/*
 	//GeneratePasswords();
 	//EnqueueDequeue();
 
@@ -332,12 +330,11 @@ int main( int argc, const char *argv[] ) {
 		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 3 
 		// (optionnel -forcenew pour ignorer la reprise d'une sauvegarde)
 	}
-
-*/
-
+	*/
 	std::cout << std::endl;
 	std::cout << "Fermeture du programme." << std::endl;
 	std::cin.get();
+
 
 	return EXIT_SUCCESS;
 }

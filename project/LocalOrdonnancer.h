@@ -12,15 +12,15 @@ class LocalOrdonnancer: public Observer
 		std::deque<CPasswordChunk> fifo;
 		const int coreCount = CUtil::GetCpuCoreCount();
 		std::vector<AgentThread*> vectorAgents;
-		void createAgents();
+		void createAgents(std::string t_hash);
 
 		AgentThread* agentInfo_;
 
 	public:
-		LocalOrdonnancer();
+		LocalOrdonnancer(std::string t_hash);
 		~LocalOrdonnancer();
 
 		void putDownAgents();
-		void update();
+		void update(int returnCode, std::string returnPassword);
 };
 

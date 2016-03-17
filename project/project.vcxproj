@@ -236,7 +236,6 @@
     <ClInclude Include="singleton.h" />
     <ClInclude Include="start.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Subject.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
@@ -252,7 +251,6 @@
     <ClCompile Include="PasswordChunk.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
