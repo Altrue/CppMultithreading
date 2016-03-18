@@ -224,6 +224,7 @@
     <ClInclude Include="..\libs\socket\include\CSocketIp4.h" />
     <ClInclude Include="..\libs\util\include\CUtil.h" />
     <ClInclude Include="AgentThread.h" />
+    <ClInclude Include="Context.h" />
     <ClInclude Include="Fifo.h" />
     <ClInclude Include="GlobalOrdonnancer.h" />
     <ClInclude Include="Hasher.h" />
@@ -241,6 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AgentThread.cpp" />
+    <ClCompile Include="Context.cpp" />
     <ClCompile Include="Fifo.cpp" />
     <ClCompile Include="GlobalOrdonnancer.cpp" />
     <ClCompile Include="Hasher.cpp" />

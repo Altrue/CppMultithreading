@@ -1,8 +1,8 @@
 #include "LocalOrdonnancer.h"
 
-LocalOrdonnancer::LocalOrdonnancer(std::string t_hash)
+LocalOrdonnancer::LocalOrdonnancer(Context *_context)
 {
-	createAgents(t_hash);
+	createAgents(_context);
 }
 
 
@@ -11,10 +11,10 @@ LocalOrdonnancer::~LocalOrdonnancer()
 
 }
 
-void LocalOrdonnancer::createAgents(std::string t_hash)
+void LocalOrdonnancer::createAgents(Context *_context)
 {
 	for (int n = 0; n < this->coreCount; n++) {
-		AgentThread* thread = new AgentThread(t_hash);
+		AgentThread* thread = new AgentThread(_context);
 		thread->attach(this);
 		std::cout << "AgentThread " << n << " est desormais observe !" << std::endl;
 		this->vectorAgents.push_back(thread);

@@ -10,6 +10,7 @@
 #include "Fifo.cpp"
 #include "PasswordChunk.h"
 #include "LocalOrdonnancer.h"
+#include "Context.h"
 
 #include "IHash.h"
 #include "CHashNone.h"
@@ -103,14 +104,22 @@ void EnqueueDequeue() {
 	std::cout << "Element count in FIFO: " << fifo.size() << std::endl;
 }
 
-void crackpw(Logger *logger, std::string p_target_hash, std::string p_algo, std::string p_alphabet, std::string p_chunksize, CPasswordChunk &p_repriseChunk) {
+void crackpw(Context *contexte) {
+	
+	Logger *logger = contexte->logger;
+	std::string p_target_hash = contexte->hash;
+	std::string p_algo = contexte->algo;
+	std::string p_alphabet = contexte->alphabet;
+	std::string p_chunksize = std::to_string(contexte->chunkSize);
+	CPasswordChunk &p_repriseChunk = *contexte->repriseChunk;
+	
 	char password[64] = "";
 	std::string alphabet = p_alphabet;
 	std::string currentHash = "";
 	
-
+	Fifo<CPasswordChunk> *pwdFifo = contexte->fifo;
 	Hasher *hasher;
-	Fifo<CPasswordChunk> *pwdFifo = new Fifo<CPasswordChunk>();
+
 
 	hasher = Hasher::getInstance();
 	hasher->initialize(p_algo);
@@ -252,15 +261,15 @@ int main( int argc, const char *argv[] ) {
 	std::cout << "Projet Multithreading : Alois - Tristan - Jeremy" << std::endl;
 	std::cout << std::endl;
 
+	// Prêt à lancer
+	bool isReadyToStart = false;
+
+	// Le contexte contient toutes les informations globales de l'application (hash, algo, etc...)
+	Context* contexte = new Context();;
 	
-	//Juste pour tester la création d'agents.
-	LocalOrdonnancer* localOrdo = new LocalOrdonnancer("Mettre le hash ici");
-	localOrdo->putDownAgents();
-
-	/*
-	//GeneratePasswords();
-	//EnqueueDequeue();
-
+	//Trucs du prof que je garde au cas où
+	// GeneratePasswords();
+	// EnqueueDequeue();
 
 	Logger *logger;
 	logger = Logger::getInstance();
@@ -309,14 +318,16 @@ int main( int argc, const char *argv[] ) {
 
 		if (needsResume) {
 			logger->newMessage(1, "L'application a été précédemment interrompue, reprise...");
-			crackpw(logger, hashCible, algo, alphabet, std::string("0"), repriseChunk);
+			contexte->fillContext(logger, hashCible, algo, alphabet, 0, "127.0.0.1", 0, &repriseChunk);
 		}
 		else {
-			crackpw(logger, argv[2], argv[4], argv[6], argv[8], repriseChunk);
+			contexte->fillContext(logger, argv[2], argv[4], argv[6], atoi(argv[8]), "127.0.0.1", 0, &repriseChunk);
 		}
+		isReadyToStart = true;
 	}
 	else if (ExtractCommandLine(argc, argv) == 2) {
-		crackpw(logger, argv[2], argv[4], argv[6], argv[8], repriseChunk);
+		contexte->fillContext(logger, argv[2], argv[4], argv[6], atoi(argv[8]), "127.0.0.1", 0, &repriseChunk);
+		isReadyToStart = true;
 	}
 	else {
 		std::cout << std::endl;
@@ -330,7 +341,16 @@ int main( int argc, const char *argv[] ) {
 		// Arguments à mettre : -hash 884863D2 -algo crc32 -alphabet abcdefghijklmnopqrstuvwxyz0123456789* -chunksize 3 
 		// (optionnel -forcenew pour ignorer la reprise d'une sauvegarde)
 	}
-	*/
+
+	if (isReadyToStart) {
+		//Juste pour tester la création d'agents.
+		LocalOrdonnancer* localOrdo = new LocalOrdonnancer(contexte);
+		localOrdo->putDownAgents();
+
+		contexte->plugFifo(new Fifo<CPasswordChunk>());
+		crackpw(contexte);
+	}
+	
 	std::cout << std::endl;
 	std::cout << "Fermeture du programme." << std::endl;
 	std::cin.get();

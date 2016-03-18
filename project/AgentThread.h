@@ -4,11 +4,12 @@
 #include <vector>
 #include <iostream>
 #include "Observer.h"
+#include "Context.h"
 
 class AgentThread: public Observable
 {
 private:
-	std::string t_hash; // hash à trouver
+	Context *contexte; // Toutes les infos à connaître.
 	~AgentThread();
 
 	int returnCode = -1;
@@ -19,7 +20,7 @@ private:
 	std::string password = ""; // Vide si on a pas trouve le mot de passe final
 
 public:
-	AgentThread(std::string t_hash);
+	AgentThread(Context *contexte);
 	
 	void notifySuccess();
 	void killAgent();

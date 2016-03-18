@@ -5,6 +5,7 @@
 #include "CUtil.h"
 #include "Observer.h"
 #include "AgentThread.h"
+#include "Context.h"
 
 class LocalOrdonnancer: public Observer
 {
@@ -12,12 +13,12 @@ class LocalOrdonnancer: public Observer
 		std::deque<CPasswordChunk> fifo;
 		const int coreCount = CUtil::GetCpuCoreCount();
 		std::vector<AgentThread*> vectorAgents;
-		void createAgents(std::string t_hash);
+		void createAgents(Context *contexte);
 
 		AgentThread* agentInfo_;
 
 	public:
-		LocalOrdonnancer(std::string t_hash);
+		LocalOrdonnancer(Context *contexte);
 		~LocalOrdonnancer();
 
 		void putDownAgents();

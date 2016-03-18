@@ -2,10 +2,10 @@
 #include <iostream>
 
 
-AgentThread::AgentThread(std::string t_hash)
+AgentThread::AgentThread(Context *_contexte)
 {
 	std::cout << "Nouveau AgentThread cree !" << std::endl;
-	this->t_hash = t_hash;
+	this->contexte = _contexte;
 }
 
 
