@@ -1,5 +1,7 @@
 #include "AgentThread.h"
 #include <iostream>
+#include <deque>
+#include "pthread.h"
 
 #include "utils.h"
 #include "Hasher.h"
@@ -12,13 +14,9 @@
 #include "CHashSha256.h"
 #include "CException.h"
 
-struct thread_args {
-	AgentThread *instance;
-};
-
-void* thread_helper(void *voidArgs) {
-	thread_args *args = (thread_args*)voidArgs;
-	int res = args->instance->run(args->instance);
+void *thread_helper(void *voidArgs) {
+	AgentThread *instance = (AgentThread *) voidArgs;
+	int res = instance->run(instance);
 	return new int(res);
 }
 
@@ -27,10 +25,7 @@ AgentThread::AgentThread(Context *_contexte)
 	std::cout << "Nouveau AgentThread cree !" << std::endl;
 	this->contexte = _contexte;
 
-	thread_args args;
-	args.instance = this;
-
-	if (pthread_create(&this->thread, nullptr, &thread_helper, &args) != 0) {
+	if (pthread_create(&this->thread, nullptr, &thread_helper, (void *)this) != 0) {
 		std::cerr << "** FAIL de creation du thread" << std::endl;
 		return;
 	}
@@ -144,7 +139,7 @@ int AgentThread::run(AgentThread *agent)
 // Fin boucle principale
 //
 
-	return 0;
+	return 1;
 }
 
 
