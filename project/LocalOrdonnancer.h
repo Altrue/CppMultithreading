@@ -15,6 +15,10 @@ class LocalOrdonnancer: public Observer
 		std::vector<AgentThread*> vectorAgents;
 		void createAgents(Context *contexte);
 
+		bool pwdFound;
+		std::string password;
+		std::string lastCheckedPassword;
+
 		AgentThread* agentInfo_;
 
 	public:
@@ -22,6 +26,7 @@ class LocalOrdonnancer: public Observer
 		~LocalOrdonnancer();
 
 		void putDownAgents();
+		void run(Context *contexte);
 		void update(int returnCode, std::string returnPassword);
 };
 

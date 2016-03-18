@@ -64,46 +64,6 @@ int ExtractCommandLine( int argc, const char *argv[] )	{
 	return returnValue;
 }
 
-
-void GeneratePasswords() {
-	char password[64] = "";
-	std::string testAlphabet = "0123456789";
-
-	strcpy_s(password, sizeof(password), "");
-	for( int i = 0; i < 2500; i++ ) {
-		HashCrackerUtils::IncreasePassword(password, sizeof(password), testAlphabet);
-		std::cout << "New password: \"" << password << "\"" << std::endl;
-	}
-}
-
-
-void EnqueueDequeue() {
-	std::deque<CPasswordChunk> fifo;
-	CPasswordChunk chunk;
-
-	fifo.clear();
-	
-	std::cout << "Queuing 00000aa --> 00000**" << std::endl;
-	chunk.Reset();
-	chunk.SetPasswordRange( "00000aa", "00000**" );
-	fifo.push_back( chunk );
-
-	std::cout << "Queuing 00001aa --> 00001**" << std::endl;
-	chunk.Reset();
-	chunk.SetPasswordRange( "00001aa", "00001**" );
-	fifo.push_back( chunk );
-
-	std::cout << "Element count in FIFO: " << fifo.size() << std::endl;
-	while (fifo.size() > 0)
-	{
-		chunk.Reset();
-		chunk = fifo.front();
-		fifo.pop_front();
-		std::cout << "Poped element: password range [" << chunk.GetPasswordBegin() << ", " << chunk.GetPasswordEnd() << "]" << std::endl;
-	}
-	std::cout << "Element count in FIFO: " << fifo.size() << std::endl;
-}
-
 void crackpw(Context *contexte) {
 	
 	Logger *logger = contexte->logger;
@@ -162,7 +122,7 @@ void crackpw(Context *contexte) {
 
 	// Boucle Principale
 	strcpy_s(password, sizeof(password), "");
-	logger->newMessage(3, "Recherche en cours... | " + p_algo + " | " + p_target_hash);
+	logger->newMessage(3, "Recherche en cours...");
 	do {
 		isRunning = true; 
 
@@ -266,10 +226,6 @@ int main( int argc, const char *argv[] ) {
 
 	// Le contexte contient toutes les informations globales de l'application (hash, algo, etc...)
 	Context* contexte = new Context();;
-	
-	//Trucs du prof que je garde au cas où
-	// GeneratePasswords();
-	// EnqueueDequeue();
 
 	Logger *logger;
 	logger = Logger::getInstance();
@@ -343,12 +299,13 @@ int main( int argc, const char *argv[] ) {
 	}
 
 	if (isReadyToStart) {
+		contexte->plugFifo(new Fifo<CPasswordChunk>());
+
 		//Juste pour tester la création d'agents.
 		LocalOrdonnancer* localOrdo = new LocalOrdonnancer(contexte);
-		localOrdo->putDownAgents();
+		//localOrdo->putDownAgents();
 
-		contexte->plugFifo(new Fifo<CPasswordChunk>());
-		crackpw(contexte);
+		//crackpw(contexte);
 	}
 	
 	std::cout << std::endl;
