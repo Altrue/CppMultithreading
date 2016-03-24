@@ -25,7 +25,9 @@
 
 LocalOrdonnancer::LocalOrdonnancer(Context *_context)
 {
-	createAgents(_context);
+	this->contexte = _context;
+	this->pwdFound = false;
+	createAgents();
 }
 
 
@@ -34,16 +36,16 @@ LocalOrdonnancer::~LocalOrdonnancer()
 
 }
 
-void LocalOrdonnancer::createAgents(Context *_context)
+void LocalOrdonnancer::createAgents()
 {
 	for (int n = 0; n < this->coreCount; n++) {
-		AgentThread* thread = new AgentThread(_context);
+		AgentThread* thread = new AgentThread(contexte);
 		thread->attach(this);
-		std::cout << "AgentThread " << n << " est desormais observe !" << std::endl;
+		//std::cout << "AgentThread " << n << " est desormais observe !" << std::endl;
 		this->vectorAgents.push_back(thread);
 	}
 
-	run(_context); // Eeeett c'est parti !
+	run(); // Eeeett c'est parti !
 }
 
 void LocalOrdonnancer::putDownAgents()
@@ -59,34 +61,32 @@ void LocalOrdonnancer::update(int returnCode, std::string returnPassword)
 {
 	// Mis à jour car un sujet a une info à faire parvenir
 	if (returnCode == 0) {
-		std::cout << "L'observateur a ete notifie de la mort d'un AgentThread" << std::endl;
+		contexte->logger->newMessage(4, "L'observateur a ete notifie de la mort d'un AgentThread");
 	}
 	else if (returnCode == 1) {
 		// Mise à jour de l'avancement pour que la sauvegarde soit efficace.
 		this->lastCheckedPassword = returnPassword;
 	}
 	else if (returnCode == 2) {
-		std::cout << "L'observateur sait que le mot de passe a ete trouve : " << returnPassword << std::endl;
+		contexte->logger->newMessage(1, "Trouve ! Le mot de passe est : " + returnPassword);
 		this->putDownAgents(); // On arrête donc les agents.
 		this->pwdFound = true; // Important pour arrêter la boucle run.
 		this->password = returnPassword;
 		// TODO : Transmettre la bonne nouvelle (et returnPassword) à l'ordonanceur global
 	}
 	else if (returnCode == -1) {
-		std::cout << "L'observateur a ete notifie d'un message mais le dev a oublie de changer le returnCode donc on ne sait pas ce que c'est..." << std::endl;
+		contexte->logger->newMessage(0, "L'observateur a ete notifie d'un message mais le dev a oublie de changer le returnCode donc on ne sait pas ce que c'est...");
 	}
 	else {
-		std::cout << "L'observateur a ete notifie d'un message mais le dev a invente un nouveau returnCode qui n'existe pas..." << std::endl;
+		contexte->logger->newMessage(0, "L'observateur a ete notifie d'un message mais le dev a invente un nouveau returnCode qui n'existe pas...");
 	}
 	
 }
 
 
-void LocalOrdonnancer::run(Context *contexte)
+void LocalOrdonnancer::run()
 {
 	// TODO : Boucle de ce que fait le local ordo. Remplir la fifo et companie.
-
-	this->pwdFound = false;
 
 	Logger *logger = contexte->logger;
 	std::string p_target_hash = contexte->hash;
@@ -101,12 +101,11 @@ void LocalOrdonnancer::run(Context *contexte)
 
 	Fifo<CPasswordChunk> *pwdFifo = contexte->fifo;
 
-	logger->newMessage(1, "Lancement du programme.");
+	logger->newMessage(1, "Lancement du local ordonnancer.");
 
 	CPasswordChunk pwdChunk;
 
 	bool isResuming = (p_repriseChunk.GetChunkSize() == 0 ? false : true); // Est-on en train de reprendre une recherche interrompue ?
-	bool passwordFound = false;				// Bool de Mot de passe trouvé
 	bool isAborted = false;					// Bool de Arrêt avant mot de passe trouvé
 	bool isRunning = false;					// Bool de Recherche en cours
 
@@ -142,14 +141,21 @@ void LocalOrdonnancer::run(Context *contexte)
 // Boucle Principale
 //
 	strcpy_s(password, sizeof(password), "");
-	logger->newMessage(3, "Recherche en cours...");
 	do {
 		isRunning = true;
 
 		// Remplissage dela FIFO si taille moins de 3 chunks restants.
-		if (pwdFifo->getSize() < 10) {
+		if (pwdFifo->getSize() < 5) {
 			// Boucle de remplissage de la FIFO
-			while (pwdFifo->getSize() < 50) {
+			pwdStartTemp = currentChunkStart;
+			pwdStartTemp = pwdStartTemp + "aa";
+			if (pwdStartTemp == "aa") {
+				pwdStartTemp = "aaa";
+			}
+			std::cout << "Etat d'avancement : " << pwdStartTemp << std::endl; // Seule impression console non-loggée du programme
+
+			logger->newMessage(4, "Debut remplissage FIFO | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+			while (pwdFifo->getSize() < 20) {
 				pwdChunk.Reset();
 				if (isResuming) {
 					isResuming = false;
@@ -166,14 +172,15 @@ void LocalOrdonnancer::run(Context *contexte)
 				pwdChunk.SetPasswordRange(pwdStartTemp, pwdEndTemp);
 
 				pwdFifo->push(pwdChunk);
-				logger->newMessage(4, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp + " | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
+				logger->newMessage(4, "Nouveau Chunk Injecte : " + pwdStartTemp + " -> " + pwdEndTemp);
 				
 				if (GetAsyncKeyState(VK_ESCAPE) != 0) {
 					isAborted = true;
-					logger->newMessage(1, "Arret demande par l'utilisateur");
+					logger->newMessage(0, "Arret demande par l'utilisateur");
 					break;
 				}
 			} // Fin boucle remplissage FIFO
+			logger->newMessage(4, "Fifo remplie | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
 		}
 
 		if (isAborted) {
@@ -195,16 +202,9 @@ void LocalOrdonnancer::run(Context *contexte)
 			logger->newMessage(0, "Arret demande par l'utilisateur");
 		}
 
-		if (this->pwdFound) {
-			// On check régulièrement si ce bool n'est pas true.
-			// Ce bool sera mis à jour si on a trouvé le truc.
-			passwordFound = true;
-			logger->newMessage(0, "Trouve ! Le mot de passe est : " + this->password);
-		}
-
 		CUtil::Sleep(50); // Dodo pendant 50ms
 
-	} while (!passwordFound && !isAborted);
+	} while (!this->pwdFound && !isAborted);
 //
 // Fin boucle principale
 //
@@ -219,7 +219,7 @@ void LocalOrdonnancer::run(Context *contexte)
 			fichier.close();
 		}
 	}
-	else if (passwordFound) {
+	else if (this->pwdFound) {
 		std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);
 		fichier.close();
 	}

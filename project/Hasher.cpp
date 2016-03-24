@@ -25,26 +25,26 @@ void Hasher::initialize(std::string hashName) {
 
 	if (hashName == "crc32") {
 		this->iHasher = new CHashCrc32();
-		std::cout << "Hash en CRC32" << std::endl;
+		//std::cout << "Hash en CRC32" << std::endl;
 	}
 	else if (hashName == "md5") {
 		this->iHasher = new CHashMd5();
-		std::cout << "Hash en Md5" << std::endl;
+		//std::cout << "Hash en Md5" << std::endl;
 	}
 	else if (hashName == "sha1") {
 		this->iHasher = new CHashSha1();
-		std::cout << "Hash en Sha1" << std::endl;
+		//std::cout << "Hash en Sha1" << std::endl;
 	}
 	else if (hashName == "sha224") {
 		this->iHasher = new CHashSha224();
-		std::cout << "Hash en Sha224" << std::endl;
+		//std::cout << "Hash en Sha224" << std::endl;
 	}
 	else if (hashName == "sha256") {
 		this->iHasher = new CHashSha256();
-		std::cout << "Hash en Sha256" << std::endl;
+		//std::cout << "Hash en Sha256" << std::endl;
 	}
 
-	std::cout << "On a le hasher" << std::endl;
+	//std::cout << "On a le hasher" << std::endl;
 }
 
 std::string Hasher::calculateHash(const std::string p_text)

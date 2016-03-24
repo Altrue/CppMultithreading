@@ -23,7 +23,7 @@ void AgentThread::updateLastPassword()
 
 void AgentThread::notifySuccess()
 {
-	std::cout << "AgentThread a trouve le mot de passe : " << this->password << std::endl;
+	//std::cout << "AgentThread a trouve le mot de passe : " << this->password << std::endl;
 
 	this->returnCode = 2;
 	notify(this->returnCode, this->password);
@@ -36,12 +36,14 @@ void AgentThread::killAgent()
 	notify(this->returnCode, this->password);
 
 	// Le code 0 va automatiquement arrêter le thread
-	std::cout << "AgentThread decede !" << std::endl;
+	contexte->logger->newMessage(2, "AgentThread decede !");
 
 }
 
 void *run(void *voidArgs)
 {
+	CUtil::Sleep(500); // On laisse le temps au local ordonnancer de se lancer proprement
+
 	AgentThread *agent = (AgentThread *)voidArgs;
 	Context *contexte = agent->contexte;
 
@@ -62,7 +64,7 @@ void *run(void *voidArgs)
 	Hasher hasher;
 
 	hasher.initialize(p_algo);
-	logger->newMessage(1, "Lancement du thread.");
+	logger->newMessage(2, "Lancement du thread.");
 
 	CPasswordChunk pwdChunk;
 
@@ -73,8 +75,6 @@ void *run(void *voidArgs)
 //
 // Boucle Principale
 //
-
-	CUtil::Sleep(1000);
 
 	strcpy_s(password, sizeof(password), "");
 	do {
@@ -95,8 +95,6 @@ void *run(void *voidArgs)
 				//std::cout << password << " -> " << currentHash << "" << std::endl;
 
 				if (currentHash == p_target_hash) { //CRC32 : "884863D2" = 123 | "2D640152" = 900
-					std::string foundMessage = "Trouve ! Le mot de passe est : ";
-					logger->newMessage(3, foundMessage.append(password));
 					isRunning = false;
 					passwordFound = true;
 					agent->password = password;
@@ -124,7 +122,7 @@ void *run(void *voidArgs)
 			saveCount++;
 		}
 		else {
-			logger->newMessage(4, "FIFO VIDE, ATTENTE...");
+			// FIFO vide, attente.
 			CUtil::Sleep(50);
 		}
 	} while (!passwordFound && !isAborted);
@@ -138,11 +136,11 @@ void *run(void *voidArgs)
 
 AgentThread::AgentThread(Context *_contexte)
 {
-	std::cout << "Nouveau AgentThread cree !" << std::endl;
+	//std::cout << "Nouveau AgentThread cree !" << std::endl;
 	this->contexte = _contexte;
 
 	if (pthread_create(&this->thread, nullptr, &run, (void *)this) != 0) {
-		std::cerr << "** FAIL de creation du thread" << std::endl;
+		contexte->logger->newMessage(0, "ECHEC de creation du thread");
 		return;
 	}
 }

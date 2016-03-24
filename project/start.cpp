@@ -42,6 +42,7 @@ int ExtractCommandLine( int argc, const char *argv[] )	{
 		return returnValue;
 	}
 
+	/*
 	// Show information
 	std::cout << "--- INFORMATION GOT FROM COMMAND LINBE ---" << std::endl;
 	std::cout << "Mode: " << (runningAsSlave ? "slave" : "master") << std::endl;
@@ -59,6 +60,7 @@ int ExtractCommandLine( int argc, const char *argv[] )	{
 		std::cout << "-chunksize " << chunkSize << std::endl;
 		std::cout << "Ignorer précédente tentative interrompue : " << (forceNew == true ? "oui" : "non") << std::endl;
 	}
+	*/
 
 	forceNew == true ? returnValue = 2 : returnValue = 1;
 	return returnValue;
@@ -178,8 +180,6 @@ void crackpw(Context *contexte) {
 			//std::cout << password << " -> " << currentHash << "" << std::endl;
 
 			if (currentHash == p_target_hash) { //CRC32 : "884863D2" = 123 | "2D640152" = 900
-				std::string foundMessage = "Trouve ! Le mot de passe est : ";
-				logger->newMessage(3, foundMessage.append(password));
 				isRunning = false;
 				passwordFound = true;
 			}
@@ -298,11 +298,7 @@ int main( int argc, const char *argv[] ) {
 	if (isReadyToStart) {
 		contexte->plugFifo(new Fifo<CPasswordChunk>());
 
-		//Juste pour tester la création d'agents.
 		LocalOrdonnancer* localOrdo = new LocalOrdonnancer(contexte);
-		//localOrdo->putDownAgents();
-
-		//crackpw(contexte);
 	}
 	
 	std::cout << std::endl;

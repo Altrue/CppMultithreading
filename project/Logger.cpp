@@ -46,30 +46,30 @@ std::string Logger::getTimeStamp()
 void Logger::newMessage(int pLevel, std::string message)
 {
 	this->_mtx.lock();
-
-	std::string messageLog;
-
-	messageLog = messageLog + this->getTimeStamp();
-
-	if (pLevel == this->LEVEL_ALERT) {
-		messageLog = messageLog + " ALERT : ";
-	}
-	else if (pLevel == this->LEVEL_ERROR) {
-		messageLog = messageLog + " ERROR : ";
-	}
-	else if (pLevel == this->LEVEL_INFO) {
-		messageLog = messageLog + " INFO : ";
-	}
-	else if (pLevel == this->LEVEL_DEBUG) {
-		messageLog = messageLog + " DEBUG : ";
-	}
-	else if (pLevel == this->LEVEL_WARN) {
-		messageLog = messageLog + " WARNING : ";
-	}
-
-	messageLog = messageLog + message;
-	std::cout << messageLog << std::endl;
 	if (pLevel <= this->verboseLevel) {
+		std::string messageLog;
+
+		messageLog = messageLog + this->getTimeStamp();
+
+		if (pLevel == this->LEVEL_ALERT) {
+			messageLog = messageLog + " ALERT : ";
+		}
+		else if (pLevel == this->LEVEL_ERROR) {
+			messageLog = messageLog + " ERROR : ";
+		}
+		else if (pLevel == this->LEVEL_INFO) {
+			messageLog = messageLog + " INFO : ";
+		}
+		else if (pLevel == this->LEVEL_DEBUG) {
+			messageLog = messageLog + " DEBUG : ";
+		}
+		else if (pLevel == this->LEVEL_WARN) {
+			messageLog = messageLog + " WARNING : ";
+		}
+
+		messageLog = messageLog + message;
+		std::cout << messageLog << std::endl;
+
 		this->insertLog(messageLog);
 	}
 
