@@ -147,9 +147,9 @@ void LocalOrdonnancer::run(Context *contexte)
 		isRunning = true;
 
 		// Remplissage dela FIFO si taille moins de 3 chunks restants.
-		if (pwdFifo->getSize() < 3) {
+		if (pwdFifo->getSize() < 10) {
 			// Boucle de remplissage de la FIFO
-			while (pwdFifo->getSize() < 10) {
+			while (pwdFifo->getSize() < 50) {
 				pwdChunk.Reset();
 				if (isResuming) {
 					isResuming = false;

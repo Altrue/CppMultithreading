@@ -19,14 +19,12 @@
 
 class Hasher
 {
-	IMPLEMENT_SINGLETON(Hasher);
-
 private:
 	IHash *iHasher;
-	Hasher(std::string hashName);
 public:
 	void initialize(std::string hashName);
 	std::string calculateHash(const std::string p_text);
 	~Hasher();
+	Hasher();
 };
 

@@ -17,6 +17,10 @@ Hasher::~Hasher()
 	
 }
 
+Hasher::Hasher() {
+
+}
+
 void Hasher::initialize(std::string hashName) {
 
 	if (hashName == "crc32") {

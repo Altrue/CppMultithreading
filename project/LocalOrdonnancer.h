@@ -10,7 +10,7 @@
 class LocalOrdonnancer: public Observer
 {
 	private:
-		std::deque<CPasswordChunk> fifo;
+		Fifo<CPasswordChunk> fifo;
 		const int coreCount = CUtil::GetCpuCoreCount();
 		std::vector<AgentThread*> vectorAgents;
 		void createAgents(Context *contexte);

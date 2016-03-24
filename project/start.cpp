@@ -65,7 +65,6 @@ int ExtractCommandLine( int argc, const char *argv[] )	{
 }
 
 void crackpw(Context *contexte) {
-	
 	Logger *logger = contexte->logger;
 	std::string p_target_hash = contexte->hash;
 	std::string p_algo = contexte->algo;
@@ -78,11 +77,9 @@ void crackpw(Context *contexte) {
 	std::string currentHash = "";
 	
 	Fifo<CPasswordChunk> *pwdFifo = contexte->fifo;
-	Hasher *hasher;
+	Hasher hasher;
 
-
-	hasher = Hasher::getInstance();
-	hasher->initialize(p_algo);
+	hasher.initialize(p_algo);
 	logger->newMessage(1, "Lancement du programme.");
 
 	CPasswordChunk pwdChunk;
@@ -175,7 +172,7 @@ void crackpw(Context *contexte) {
 		logger->newMessage(4, "Debut lecture du chunk...");
 		do {
 			HashCrackerUtils::IncreasePassword(password, sizeof(password), alphabet);
-			currentHash = hasher->calculateHash(password);
+			currentHash = hasher.calculateHash(password);
 
 			//Décommentez cette ligne ci-dessous pour afficher les tentatives une à une :
 			//std::cout << password << " -> " << currentHash << "" << std::endl;

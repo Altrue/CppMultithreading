@@ -29,7 +29,6 @@ public:
 	void updateLastPassword();
 	void notifySuccess();
 	void killAgent();
-	int run(AgentThread *agent);
 
 };
 
