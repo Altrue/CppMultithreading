@@ -50,7 +50,7 @@ void LocalOrdonnancer::createAgents()
 
 void LocalOrdonnancer::putDownAgents()
 {
-	for (int n = 0; n < this->coreCount; n++) {
+	for (int n = 0; n < this->vectorAgents.size(); n++) {
 		this->vectorAgents[n]->killAgent();
 	}
 
@@ -64,10 +64,6 @@ void LocalOrdonnancer::update(int returnCode, std::string returnPassword)
 		contexte->logger->newMessage(4, "L'observateur a ete notifie de la mort d'un AgentThread");
 	}
 	else if (returnCode == 1) {
-		// Mise à jour de l'avancement pour que la sauvegarde soit efficace.
-		this->lastCheckedPassword = returnPassword;
-	}
-	else if (returnCode == 2) {
 		contexte->logger->newMessage(1, "Trouve ! Le mot de passe est : " + returnPassword);
 		this->putDownAgents(); // On arrête donc les agents.
 		this->pwdFound = true; // Important pour arrêter la boucle run.
@@ -114,8 +110,14 @@ void LocalOrdonnancer::run()
 	int chunkSize = (atoi(p_chunksize.c_str()) - 2);	// -2 vu qu'on rajoute deux lettres à la fin du chunk quoi qu'il arrive.
 	if (atoi(p_chunksize.c_str()) - 2 < 0) { int chunkSize = 0; }
 	char currentChunkStart[MAX_PWD_LENGTH] = "";	// "Meta" Mot de passe pour incrémenter les chunks.
+													// Définition : Un Meta Mot de passe est utilisé pour calculer les chunks.
+													// On rajoute "aa" ou "**", pour trouver le début / fin du chunk. Exemple : "hij" = "hijaa" -> "hij**"
+	
+	// Pour sauvegarder la progression :
+	// On prends le premier chunk de l'**avant-dernier** remplissage de la FIFO.
+	// Cela garantit facilement l'exhaustivité de la recherche
+	std::string saveChunk = "";
 
-													// Définition : Un Meta Mot de passe est utilisé pour calculer les chunks. On rajoute "aa" ou "**", pour trouver le début / fin du chunk. Exemple : "hij" = "hijaa" -> "hij**"
 
 	std::string firstPwd;					// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
 	for (int i = 1; i < chunkSize && i < MAX_PWD_LENGTH; i++) {	// "" donne un premier chunk de aaa -> a**
@@ -153,6 +155,9 @@ void LocalOrdonnancer::run()
 				pwdStartTemp = "aaa";
 			}
 			std::cout << "Etat d'avancement : " << pwdStartTemp << std::endl; // Seule impression console non-loggée du programme
+			
+			this->lastCheckedPassword = saveChunk;	// Modification de ce qu'est à mettre dans le fichier de sauvegarde si on presse ESC.
+			saveChunk = pwdStartTemp; // On modifie la valeur de saveChunk **après**, pour que cela n'ait d'impact sur lastCheckedPassword que lors du prochain passage.
 
 			logger->newMessage(4, "Debut remplissage FIFO | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
 			while (pwdFifo->getSize() < 20) {
@@ -183,14 +188,19 @@ void LocalOrdonnancer::run()
 			logger->newMessage(4, "Fifo remplie | Taille FIFO : " + std::to_string(pwdFifo->getSize()));
 		}
 
+		// Très très rare d'arriver à abort pendant le (très rapide) remplissage d'une FIFO.
 		if (isAborted) {
-			std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
-			if (fichier) {
-				fichier << alphabet << std::endl;
-				fichier << this->lastCheckedPassword << std::endl;
-				fichier << p_algo << std::endl;
-				fichier << p_target_hash << std::endl;
-				fichier.close();
+			if (this->lastCheckedPassword != "") {
+				std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+				if (fichier) {
+					fichier << alphabet << std::endl;
+					fichier << this->lastCheckedPassword << std::endl;
+					fichier << p_algo << std::endl;
+					fichier << p_target_hash << std::endl;
+					fichier.close();
+
+					logger->newMessage(3, "Dernier chunk sauvegarde : " + this->lastCheckedPassword);
+				}
 			}
 			
 			this->putDownAgents(); // On interrompt les threads.
@@ -210,14 +220,20 @@ void LocalOrdonnancer::run()
 //
 
 	if (isAborted) {
-		std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
-		if (fichier) {
-			fichier << alphabet << std::endl;
-			fichier << pwdChunk.GetPasswordBegin() << std::endl;
-			fichier << p_algo << std::endl;
-			fichier << p_target_hash << std::endl;
-			fichier.close();
+		if (this->lastCheckedPassword != "") {
+			std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+			if (fichier) {
+				fichier << alphabet << std::endl;
+				fichier << this->lastCheckedPassword << std::endl;
+				fichier << p_algo << std::endl;
+				fichier << p_target_hash << std::endl;
+				fichier.close();
+
+				logger->newMessage(3, "Dernier chunk sauvegarde : " + this->lastCheckedPassword);
+			}
 		}
+
+		this->putDownAgents(); // On interrompt les threads.
 	}
 	else if (this->pwdFound) {
 		std::ofstream fichier("statut.txt", std::ios::out | std::ios::trunc);

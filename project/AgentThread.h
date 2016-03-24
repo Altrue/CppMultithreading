@@ -22,11 +22,9 @@ public:
 	int returnCode = -1;
 	// -1 = Code de retour par défaut qui ne veut rien dire
 	// 0 = Thread kill
-	// 1 = Etat de l'avancement (pour la sauvegarde)
-	// 2 = Mot de passe trouve !
+	// 1 = Mot de passe trouve !
 	
 	
-	void updateLastPassword();
 	void notifySuccess();
 	void killAgent();
 

@@ -244,33 +244,32 @@ int main( int argc, const char *argv[] ) {
 			switch (lineCounter) {
 			case 1:
 				alphabet = fileLine;
-				logger->newMessage(1, "Alphabet : " + fileLine);
+				logger->newMessage(4, "Alphabet : " + fileLine);
 				break;
 			case 2:
 				startOldChunk = fileLine;
 				endOldChunk = startOldChunk.substr(0, startOldChunk.size() - 2);
 				endOldChunk = endOldChunk + alphabet.back() + alphabet.back();
-				logger->newMessage(1, "Reprise de la recherche précédente interrompue au chunk : " + startOldChunk + " -> " + endOldChunk);
+				logger->newMessage(1, "Reprise de la recherche interrompue : " + startOldChunk);
 				needsResume = true;
 				repriseChunk.SetPasswordRange(startOldChunk, endOldChunk);
 				break;
 			case 3:
 				algo = fileLine;
-				logger->newMessage(1, "Algo : " + fileLine);
+				logger->newMessage(4, "Algo : " + fileLine);
 				break;
 			case 4:
 				hashCible = fileLine;
-				logger->newMessage(1, "Hash cible : " + fileLine);
+				logger->newMessage(4, "Hash cible : " + fileLine);
 				break;
 			default:
-				logger->newMessage(1, "Anomalie lors de la reprise d'un fichier de sauvegarde : Ligne en trop.");
+				logger->newMessage(4, "Anomalie lors de la reprise d'un fichier de sauvegarde : Ligne en trop.");
 				break;
 			}
 			lineCounter++;
 		}
 
 		if (needsResume) {
-			logger->newMessage(1, "L'application a été précédemment interrompue, reprise...");
 			contexte->fillContext(logger, hashCible, algo, alphabet, 0, "127.0.0.1", 0, &repriseChunk);
 		}
 		else {
@@ -284,7 +283,7 @@ int main( int argc, const char *argv[] ) {
 	}
 	else {
 		std::cout << std::endl;
-		std::cout << "Mauvais arguments de ligne de commande." << std::endl;
+		logger->newMessage(0, "Mauvais arguments de ligne de commande.");
 
 		// Display each command-line argument.
 		std::cout << "Voici les arguments trouvés :" << std::endl;
@@ -301,6 +300,7 @@ int main( int argc, const char *argv[] ) {
 		LocalOrdonnancer* localOrdo = new LocalOrdonnancer(contexte);
 	}
 	
+	logger->insertEndLine();
 	std::cout << std::endl;
 	std::cout << "Fermeture du programme." << std::endl;
 	std::cin.get();

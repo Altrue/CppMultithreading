@@ -38,5 +38,6 @@ class Logger
 		~Logger();
 		// Fonction utilisée pour créer les logs (thread-safe)
 		void newMessage(int pLevel, std::string message);
+		void insertEndLine();
 
 };

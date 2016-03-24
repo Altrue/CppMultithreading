@@ -43,6 +43,10 @@ std::string Logger::getTimeStamp()
 	return out.str();
 }
 
+void Logger::insertEndLine() {
+	this->insertLog("--------------FIN EXECUTION--------------");
+}
+
 void Logger::newMessage(int pLevel, std::string message)
 {
 	this->_mtx.lock();

@@ -15,17 +15,11 @@
 #include "CException.h"
 #include "CUtil.h"
 
-void AgentThread::updateLastPassword()
-{
-	this->returnCode = 1;
-	notify(this->returnCode, this->password);
-}
-
 void AgentThread::notifySuccess()
 {
 	//std::cout << "AgentThread a trouve le mot de passe : " << this->password << std::endl;
 
-	this->returnCode = 2;
+	this->returnCode = 1;
 	notify(this->returnCode, this->password);
 }
 
@@ -46,9 +40,6 @@ void *run(void *voidArgs)
 
 	AgentThread *agent = (AgentThread *)voidArgs;
 	Context *contexte = agent->contexte;
-
-	// TODO : L'agent calcule des hash
-	int saveCount = 0; // Compteur pour sauvegarder périodiquement
 
 	Logger *logger = contexte->logger;
 	std::string p_target_hash = contexte->hash;
@@ -112,14 +103,6 @@ void *run(void *voidArgs)
 				}
 			} while (isRunning);
 		// Fin boucle traitement chunk
-
-			if (saveCount >= 10) {
-				agent->password = pwdChunk.GetPasswordBegin();
-				agent->updateLastPassword();
-				saveCount = 0;
-			}
-
-			saveCount++;
 		}
 		else {
 			// FIFO vide, attente.
