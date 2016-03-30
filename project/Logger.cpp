@@ -12,7 +12,7 @@ void Logger::initialize(int level) {
 
 void Logger::insertLog(std::string pContent)
 {
-	std::ofstream fichier(this->_fileName, std::ios::out | std::ios::app);  // ouverture en écriture avec effacement du fichier ouvert
+	std::ofstream fichier(this->_fileName, std::ios::out | std::ios::app);
 	if (fichier){
 		fichier << pContent << std::endl;
 		fichier.close();
@@ -30,7 +30,7 @@ std::string Logger::getTimeStamp()
 	std::string nbHeures = std::to_string(date.m_wHour);
 	std::string nbMinutes = std::to_string(date.m_wMinute);
 	std::string nbSecondes = std::to_string(date.m_wSecond);
-	// Super joli le décalage d'un caractère à chaque fois
+	// Hasard du français : Joli le décalage d'un caractère à chaque fois !
 
 	// Normalisation de la date (exemple 3 -> 03)
 	if (nbMois.length() < 2) { nbMois = "0" + nbMois; }

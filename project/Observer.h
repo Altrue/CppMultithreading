@@ -5,6 +5,7 @@
 #include <string>
 
 using namespace std;
+// Présence de la classe Observable et Observer dans ce fichier qui représente le design pattern Observer dans sa globalité.
 
 class Observable;
 

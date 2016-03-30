@@ -45,7 +45,7 @@ void LocalOrdonnancer::createAgents()
 		this->vectorAgents.push_back(thread);
 	}
 
-	run(); // Eeeett c'est parti !
+	run();
 }
 
 void LocalOrdonnancer::putDownAgents()
@@ -82,8 +82,6 @@ void LocalOrdonnancer::update(int returnCode, std::string returnPassword)
 
 void LocalOrdonnancer::run()
 {
-	// TODO : Boucle de ce que fait le local ordo. Remplir la fifo et companie.
-
 	Logger *logger = contexte->logger;
 	std::string p_target_hash = contexte->hash;
 	std::string p_algo = contexte->algo;
@@ -115,23 +113,23 @@ void LocalOrdonnancer::run()
 	
 	// Pour sauvegarder la progression :
 	// On prends le premier chunk de l'**avant-dernier** remplissage de la FIFO.
-	// Cela garantit facilement l'exhaustivité de la recherche
+	// Cela garantit facilement l'exhaustivité de la recherche en cas d'interruption, le gaspillage de temps est négligeable (quelques ms)
 	std::string saveChunk = "";
 
 
-	std::string firstPwd;					// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
-	for (int i = 1; i < chunkSize && i < MAX_PWD_LENGTH; i++) {	// "" donne un premier chunk de aaa -> a**
-		firstPwd += lastLetter;			// "*" donne un premier chunk de "aaaa" -> "aa**", etc...		
+	std::string firstPwd;											// Premier chunk à trouver, moins 1. On fera "+1" au début de la boucle tout à l'heure.
+	for (int i = 1; i < chunkSize && i < MAX_PWD_LENGTH; i++) {		// Exemple 1 : "" donne un premier chunk de aaa -> a**
+		firstPwd += lastLetter;										// Exemple 2 : "*" donne un premier chunk de "aaaa" -> "aa**"
 	}
 
 	strncpy_s(currentChunkStart, firstPwd.c_str(), _TRUNCATE);
 
-	std::string pwdStartTemp;		// "Meta" Password de début de chunk.
+	std::string pwdStartTemp;		// "Meta" Password de début de chunk. (c'est à dire sans les deux derniers chars qui sont toujours aa et **)
 	std::string pwdEndTemp;			// "Meta" Password de fin de chunk.
 
 									// Procédure de reprise à partir d'un fichier de sauvegarde.
 	if (isResuming) {
-		// Déplacer le début du chunk de reprise (- les 2 derniers charactères) dans le currentChunkStart)
+		// Déplacer le début du chunk de reprise (- les 2 derniers charactères) dans le currentChunkStart
 		strncpy_s(currentChunkStart, p_repriseChunk.GetPasswordBegin().substr(0, p_repriseChunk.GetPasswordBegin().size() - 2).c_str(), _TRUNCATE);
 
 		// Déplacer le début du chunk de reprise et de fin dans leurs variables respectives
@@ -146,7 +144,10 @@ void LocalOrdonnancer::run()
 	do {
 		isRunning = true;
 
-		// Remplissage dela FIFO si taille moins de 3 chunks restants.
+		// Remplissage de la FIFO si taille de moins de 5 chunks restants.
+		// Note :	Il serait très facile de faire une FIFO de taille proportionnelle au nombre de coeurs CPU.
+		//			Mais cela ne permet que de passer d'environ 95% d'usage à ~100% d'usage CPU.
+		//			La dégradation de l'expérience utilisateur pendant une recherche est, en revanche, infiniment plus grande...
 		if (pwdFifo->getSize() < 5) {
 			// Boucle de remplissage de la FIFO
 			pwdStartTemp = currentChunkStart;
@@ -212,7 +213,7 @@ void LocalOrdonnancer::run()
 			logger->newMessage(0, "Arret demande par l'utilisateur");
 		}
 
-		CUtil::Sleep(50); // Dodo pendant 50ms
+		CUtil::Sleep(50); // Pause pendant 50ms avant de re-vérifier l'état de la FIFO.
 
 	} while (!this->pwdFound && !isAborted);
 //

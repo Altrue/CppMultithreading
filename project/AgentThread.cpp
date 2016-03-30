@@ -17,8 +17,6 @@
 
 void AgentThread::notifySuccess()
 {
-	//std::cout << "AgentThread a trouve le mot de passe : " << this->password << std::endl;
-
 	this->returnCode = 1;
 	notify(this->returnCode, this->password);
 }
@@ -83,7 +81,6 @@ void *run(void *voidArgs)
 				currentHash = hasher.calculateHash(password);
 
 				//Décommentez cette ligne ci-dessous pour afficher les tentatives une à une :
-				//std::cout << password << " -> " << currentHash << "" << std::endl;
 
 				if (currentHash == p_target_hash) { //CRC32 : "884863D2" = 123 | "2D640152" = 900
 					isRunning = false;
@@ -119,7 +116,6 @@ void *run(void *voidArgs)
 
 AgentThread::AgentThread(Context *_contexte)
 {
-	//std::cout << "Nouveau AgentThread cree !" << std::endl;
 	this->contexte = _contexte;
 
 	if (pthread_create(&this->thread, nullptr, &run, (void *)this) != 0) {
